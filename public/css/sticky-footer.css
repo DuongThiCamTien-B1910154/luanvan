@@ -1,0 +1,330 @@
+/* Sticky footer styles
+-------------------------------------------------- */
+
+/* html {
+  position: relative;
+  min-height: 100%;
+} */
+
+.toastt {
+    font-size: 20px;
+    position: fixed;
+    padding: 10px;
+    bottom: 10px;
+    right: 20px;
+    z-index: 100;
+}
+
+.border-2 {
+    /* transition-property: calc(360deg); */
+    /* border: radial-gradient(#39c6dc, rgb(17, 26, 201)); */
+    cursor: pointer;
+    margin-left: .5rem;
+    height: 4rem;
+    line-height: 4rem;
+    width: 4rem;
+    text-align: center;
+    font-size: 3rem;
+    /* color:var(--black); */
+    border-radius: 50%;
+    background: rgb(238, 238, 238);
+}
+
+.spinner-grow {
+    animation: 1.25s linear infinite spinner-grow;
+}
+
+
+
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    background-color: #f5f5f5;
+}
+
+/* Custom page CSS
+-------------------------------------------------- */
+
+/* Not required for template or sticky footer method. */
+
+/* .container .text-muted {
+  margin: 20px 0;
+} */
+
+body {
+    /* overflow: hidden; */
+    font-family: Arial, Helvetica, Sans-Serif;
+    /*phông chữ*/
+    font-size: 13pt;
+    margin-top: 20px;
+    /*Lề trên: 20px;*/
+    background: rgb(245, 245, 245);
+    /* border-radius: 10px 10px 10px 10px; */
+    /* bo 4 góc*/
+    /* -moz-border-radius: 10px 10px 10px 10px;
+    -webkit-border-radius: 10px 10px 10px 10px; */
+    /*Sử dụng bóng hộp: 0 0 5px 5px #888;*/
+
+    /* border: solid 1px #808080;
+    grid-template-areas: 'header-cell' 'nav-cell' 'main-cell' 'footer-cell'; */
+}
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    padding: 0.2rem 7%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000;
+    box-shadow: var(--box-shadow);
+}
+
+header .logo {
+    color: rgb(38, 16, 239);
+    font-size: 2.5rem;
+    font-weight: bolder;
+}
+
+header .logo i {
+    color: rgb(38, 16, 239);
+}
+
+header .navbar a.active,
+header .navbar a:hover {
+    color: #fff;
+    background: rgb(38, 16, 239);
+}
+
+header .icons > i,
+header .icons > a {
+    cursor: pointer;
+    margin-left: 0.5rem;
+    height: 2.5rem;
+    line-height: 2.5rem;
+    width: 2.5rem;
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--black);
+    border-radius: 50%;
+    background: rgb(238, 238, 238);
+}
+
+header .icons i:hover,
+header .icons a:hover {
+    color: #fff;
+    background: rgb(38, 16, 239);
+    transform: rotate(360deg);
+}
+
+a > i {
+    color: #fff;
+    /* background: var(--green); */
+    transform: rotate(360deg);
+}
+
+/* a>i:hover {
+    color: #fff;
+    background: var(--green);
+    transform: rotate(360deg);
+} */
+
+.text-dark-blue {
+    color: rgb(38, 16, 239);
+    font-size: 50px;
+}
+
+.btn-dark-blue {
+    background-color: rgb(38, 16, 239);
+}
+
+.btn:hover {
+    color: #fff;
+    background-color: rgb(38, 16, 239);
+}
+
+.btn-dark-blue-cart {
+    background-color: rgb(38, 16, 239);
+    color: #fff;
+}
+
+.btn-dark-blue-cart:hover {
+    color: #fff;
+    background-color:rgb(38, 16, 239);
+}
+
+.images img {
+    height: 20rem;
+    width: 100%;
+    padding: 2.5rem;
+    overflow: hidden;
+    position: relative;
+}
+
+.border-2 {
+    /* transition-property: calc(360deg); */
+    /* border: radial-gradient(#39c6dc, rgb(17, 26, 201)); */
+    cursor: pointer;
+    margin-left: 0.5rem;
+    height: 2.5rem;
+    line-height: 2.5rem;
+    width: 2.5rem;
+    text-align: center;
+    font-size: 1.2rem;
+    /* color:var(--black); */
+    border-radius: 50%;
+    background: rgb(238, 238, 238);
+}
+
+.spinner-grow {
+    animation: 1.25s linear infinite spinner-grow;
+}
+
+/* .card {
+    width: 30rem;
+    height: 1000px;
+} */
+
+/* ------------------------------Lien he------------------- */
+
+.header-lh > img {
+    height: 200px;
+    width: 100%;
+}
+
+/* .err {
+    font-size: 50px;
+    color: red;
+} */
+
+.card-color {
+    background: rgb(38, 16, 239);
+}
+
+.h-color {
+    background: -webkit-gradient(
+        linear,
+        98% 0,
+        0 0,
+        from(#fff),
+        to(rgb(38, 16, 239))
+    );
+}
+
+.loader-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 10000;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.loader-container img {
+    width: 7rem;
+}
+
+.loader-container.fade-out {
+    top: -110%;
+    opacity: 0;
+}
+/* #demo2{
+    background-color: #fff;
+   
+} */
+
+.deliver {
+    position: fixed;
+    z-index: 10000;
+    display: flex;
+    left: 32%;
+    top: 12%;
+}
+.deliver > a {
+    /* background-color: springgreen; */
+    color: black;
+}
+.card-header {
+    background: #fff;
+}
+.right-icon {
+    position: absolute;
+    right: 5%;
+}
+
+/* toggle */
+.sidebar {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+.sidebar a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    color: #f1f1f1;
+}
+
+.sidebar .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+.openbtn {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #111;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+}
+
+.openbtn:hover {
+    background-color: #444;
+}
+
+#main {
+    transition: margin-left 0.5s;
+    padding: 16px;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+    .sidebar {
+        padding-top: 15px;
+    }
+
+    .sidebar a {
+        font-size: 18px;
+    }
+}
+
