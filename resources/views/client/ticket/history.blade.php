@@ -127,8 +127,8 @@ $stt = 1;
                                 <a href="{{asset('client/history/deleteTicket')}}/{{$seat->idghe}}" class="btn btn-danger" style="margin-left: 35%;" onclick="return confirm('Bạn có chắc muốn xóa không?')">
                                     Xóa
                                 </a>
-                                <a href="{{asset('client/history/deleteTicket123456')}}/{{$seat->idghe}}" class="btn btn-primary">
-                                    Nhận xét
+                                <a href="#" data-toggle="modal" data-target="#ModalCreateRating" class="btn btn-primary data-key">
+                                    Đánh giá
                                 </a>
                             </td>
                             <td class="text-danger btn " style="height: 70px;">
@@ -160,10 +160,12 @@ $stt = 1;
 
         </div>
         <br>
+        @include('client.ticket.modal.createModalRating')
         <!-- noi dung -->
         @include('client.layout.footer')
         <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
         <script src="js/script.js"></script>
+        @include('client.layout.script')
     </div>
 
 </body>

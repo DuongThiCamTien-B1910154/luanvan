@@ -141,6 +141,7 @@ Route::prefix('/client')->name('client.')->group(function () {
         Route::post('/findBus', [ticketClientController::class, 'booking']);
         Route::post('/findRoute', [ticketClientController::class, 'findRoute']);
         Route::post('/seat', [ticketClientController::class, 'seat']);
+        Route::post('/rating', [ticketClientController::class, 'rating']);
 
         Route::get('/history', [historyClientController::class, 'showHistory']);
     });

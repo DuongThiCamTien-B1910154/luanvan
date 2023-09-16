@@ -43,7 +43,7 @@
             var privateTeam = $('.bus').val();
             hide_show(privateTeam);
         }, 5000);
-        
+
         // show seat
         $('.bus').on('change', function() {
             var action = $(this).attr('id');
@@ -108,6 +108,32 @@
 
         );
 
+        //  rating submit
+        $(".rating_bus").click(function(e) {
+            event.preventDefault()
+            var content = $(".content").val();
+            var number = $(".number_rating").val()
+            var _token = $('input[name="_token"]').val();
+            if (!number) {
+                alert("Vui lòng chọn đánh giá !");
+            } else(
+                $.ajax({
+                    method: "POST",
+                    url: '{{url("/client/ticket/rating")}}',
+                    data: {
+                        number: number,
+                        content: content,
+                        _token: _token,
+                    },
+                    success: function(data) {
+                        alert("Đánh giá thành công");
+                        $('#ModalCreateRating').modal().hide()
+                        $('.modal-backdrop').remove();
+                    }
+                })
+            )
+
+        })
     });
 
     function hide_show(privateTeam) {
@@ -127,39 +153,37 @@
                     },
                     success: function(data) {
                         $('.seatBus').html(data);
-                        // console.log(('#' + result));
                     }
                 });
             }
         }
     }
-    // $(function() {
-    //     $('.bus').on('change', function() {
-    //         $.cookie('id_c_ng_g_x', this.value);
-    //         console.log('before')
-    //         // previous = this.value;
-    //         console.log($.cookie('id_c_ng_g_x', this.value))
-    //     });
-    //     $('.id_c_ng_g_x').val($.cookie('id_c_ng_g_x') || 1);
-    //     console.log($('.id_c_ng_g_x').val($.cookie('id_c_ng_g_x') || 1))
 
-    // });
-    // (function() {
-    //     var previous;
-    //     $("select[name=id_c_ng_g_x]").focus(function() {
-    //         // Store the current value on focus, before it changes
-    //         console.log('before')
-    //         previous = this.value;
-    //         console.log(previous)
+    //  rating_start
+    $(function() {
+        let listStart = $(".list_start .fa");
+        listRatingText = {
+            1: 'Không thích',
+            2: 'Tạm được',
+            3: 'Bình thường',
+            4: 'Tốt',
+            5: 'Rất tốt',
+        };
 
-    //     }).change(function() {
-    //         // Do something with the previous value after the change
-    //         // document.$(this).attr('id')
-    //         console.log('after')
-    //         previous = this.value;
-    //         console.log(previous)
-    //     });
-    // })();
+        listStart.mouseover(function() {
+            let $this = $(this);
+            let number = $this.attr('data-key')
+            listStart.removeClass('rating_active')
+            $(".number_rating").val(number)
+            $.each(listStart, function(key, value) {
+                if (key + 1 <= number) {
+                    $(this).addClass('rating_active')
+                }
+            })
+            $(".list_text").text('').text(listRatingText[number]).show()
+        })
+
+    })
 </script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>

@@ -5,7 +5,34 @@
   position: relative;
   min-height: 100%;
 } */
+.list_start i:hover {
+    cursor: pointer;
+}
+.list_text {
+    display: inline-block;
+    margin: 10px;
+    position: relative;
+    color: #0d0b0b;
+    padding: 2px 8px;
+    box-sizing: border-box;
+    font-size: 16px;
+    border-radius: 2px;
+}
+.list_start .rating_active {
+    color: yellow;
+}
+/* .list_text::after{
+    
+    border: solid transparent;
+    height: 500px;
+    width: 500px;
+    pointer-events: none;
+    border-color: yellow;
+    /* border-color: rgb(71, 239, 33);
+    border-right-color: #d9c4c4; 
+    
 
+} */
 .toastt {
     font-size: 20px;
     position: fixed;
@@ -19,7 +46,7 @@
     /* transition-property: calc(360deg); */
     /* border: radial-gradient(#39c6dc, rgb(17, 26, 201)); */
     cursor: pointer;
-    margin-left: .5rem;
+    margin-left: 0.5rem;
     height: 4rem;
     line-height: 4rem;
     width: 4rem;
@@ -33,9 +60,6 @@
 .spinner-grow {
     animation: 1.25s linear infinite spinner-grow;
 }
-
-
-
 
 .footer {
     position: absolute;
@@ -157,7 +181,7 @@ a > i {
 
 .btn-dark-blue-cart:hover {
     color: #fff;
-    background-color:rgb(38, 16, 239);
+    background-color: rgb(38, 16, 239);
 }
 
 .images img {
@@ -247,7 +271,7 @@ a > i {
 
 .deliver {
     position: fixed;
-    z-index: 10000;
+    z-index: 10;
     display: flex;
     left: 32%;
     top: 12%;
@@ -327,4 +351,3 @@ a > i {
         font-size: 18px;
     }
 }
-

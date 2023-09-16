@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\admin\bookingRequest;
 use App\Http\Requests\client\ticketClientRequest;
 use App\Models\routeModel;
+use Exception;
 use Illuminate\Http\Request;
 use App\Models\busModel;
 use App\Models\chairModel;
@@ -69,23 +70,23 @@ class ticketClientController extends Controller
     {
         $data = $request->all();
         // if ($data['action']) {
-            $output = '';
-            // if ($data['action']) {
-                $check = tripDayTimeBusModel::join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')->find($data['ma']);
-                // $check = busModel::find();
+        $output = '';
+        // if ($data['action']) {
+        $check = tripDayTimeBusModel::join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')->find($data['ma']);
+        // $check = busModel::find();
 
-                // echo ($check['idxe']);
-                $buss = busModel::join('ghe', 'xe.idxe', '=', 'ghe.idxe')->where('ghe.idxe', $check['idxe'])->get();
-                // foreach ($check as $key => $bus) {
-                //     echo ($bus['idxe']);
-                // }
-                if ($check['idlx'] == 1) {
-                    $output .= '<div class="col-6"><div class="row">';
-                    foreach ($buss as $key => $bus) {
-                        if ($key < 10) {
+        // echo ($check['idxe']);
+        $buss = busModel::join('ghe', 'xe.idxe', '=', 'ghe.idxe')->where('ghe.idxe', $check['idxe'])->get();
+        // foreach ($check as $key => $bus) {
+        //     echo ($bus['idxe']);
+        // }
+        if ($check['idlx'] == 1) {
+            $output .= '<div class="col-6"><div class="row">';
+            foreach ($buss as $key => $bus) {
+                if ($key < 10) {
 
-                            if ($bus['datcho'] == 1) {
-                                $output .= '
+                    if ($bus['datcho'] == 1) {
+                        $output .= '
                                 <div class=" bg-danger" 
                                 style="border-radius: 15px 15px 0px 0px;
                                     border: 2px solid black;
@@ -97,8 +98,8 @@ class ticketClientController extends Controller
                                     height: 50px;
                                     flex: 0 0 auto;"><b style=" border-bottom: 2px solid #000; padding-bottom:3px;width: 100%">' . $bus['maghe'] . '</b></div>
                                         ';
-                            } else {
-                                $output .= '
+                    } else {
+                        $output .= '
                             <div class=" bg-light" 
                             style="border-radius: 15px 15px 0px 0px;
                                 border: 2px solid black;
@@ -110,21 +111,21 @@ class ticketClientController extends Controller
                                 height: 50px;
                                 flex: 0 0 auto;"><b style=" border-bottom: 2px solid #000; padding-bottom:3px;width: 100%">' . $bus['maghe'] . '</b></div>
                                     ';
-                            }
-                        }
-
-
-
-                        // $output .= '<option value ="' . $district->idqh . '">' . $district->name_district . '</option>';
                     }
-                    $output .= ' </div> </div>';
+                }
 
-                    $output .= '<div class="col-6"><div class="row">';
-                    foreach ($buss as $key => $bus) {
-                        // echo($key);
-                        if ($key >= 10) {
-                            if ($bus['datcho'] == 1) {
-                                $output .= '
+
+
+                // $output .= '<option value ="' . $district->idqh . '">' . $district->name_district . '</option>';
+            }
+            $output .= ' </div> </div>';
+
+            $output .= '<div class="col-6"><div class="row">';
+            foreach ($buss as $key => $bus) {
+                // echo($key);
+                if ($key >= 10) {
+                    if ($bus['datcho'] == 1) {
+                        $output .= '
                                 <div class=" bg-danger " 
                                 style="border-radius: 15px 15px 0px 0px;
                                     border: 2px solid black;
@@ -136,8 +137,8 @@ class ticketClientController extends Controller
                                     height: 50px;
                                     flex: 0 0 auto;"><b style=" border-bottom: 2px solid #000; padding-bottom:3px;width: 100%">' . $bus['maghe'] . '</b></div>
                                         ';
-                            } else {
-                                $output .= '
+                    } else {
+                        $output .= '
                             <div class=" bg-light " 
                             style="border-radius: 15px 15px 0px 0px;
                                 border: 2px solid black;
@@ -149,20 +150,20 @@ class ticketClientController extends Controller
                                 height: 50px;
                                 flex: 0 0 auto;"><b style=" border-bottom: 2px solid #000; padding-bottom:3px;width: 100%">' . $bus['maghe'] . '</b></div>
                                     ';
-                            }
-                        }
-
-                        // $output .= '<option value ="' . $district->idqh . '">' . $district->name_district . '</option>';
                     }
-                    $output .= ' </div> </div>';
                 }
 
-                // ghe ngoi
-                else {
-                    foreach ($buss as $key => $bus) {
-                        if ($bus['datcho'] == 1) {
-                            if (($key % 2) == 1) {
-                                $output .= '
+                // $output .= '<option value ="' . $district->idqh . '">' . $district->name_district . '</option>';
+            }
+            $output .= ' </div> </div>';
+        }
+
+        // ghe ngoi
+        else {
+            foreach ($buss as $key => $bus) {
+                if ($bus['datcho'] == 1) {
+                    if (($key % 2) == 1) {
+                        $output .= '
                                     <div class=" bg-danger " 
                                     style="border-radius: 15px 15px 0px 0px;
                                         border: 2px solid black;
@@ -172,8 +173,8 @@ class ticketClientController extends Controller
                                         width: 18%;
                                         height: 50px;
                                         flex: 0 0 auto;"><b style=" border-bottom: 2px solid #000; padding-bottom:3px;width: 100%">' . $bus['maghe'] . '</b></div>';
-                            } else {
-                                $output .= '
+                    } else {
+                        $output .= '
                                     <div class=" bg-danger " 
                                     style="border-radius: 15px 15px 0px 0px;
                                         border: 2px solid black;
@@ -184,10 +185,10 @@ class ticketClientController extends Controller
                                         width: 18%;
                                         height: 50px;
                                         flex: 0 0 auto;"><b style=" border-bottom: 2px solid #000; padding-bottom:3px;width: 100%">' . $bus['maghe'] . '</b></div>';
-                            }
-                        } else if ($bus['datcho'] == 0) {
-                            if (($key % 2) == 1) {
-                                $output .= '
+                    }
+                } else if ($bus['datcho'] == 0) {
+                    if (($key % 2) == 1) {
+                        $output .= '
                                         <div class="bg-light " 
                                         style="border-radius: 15px 15px 0px 0px;
                                             border: 2px solid black;
@@ -198,8 +199,8 @@ class ticketClientController extends Controller
                                             height: 50px;
                                             flex: 0 0 auto;"  ><b style=" border-bottom: 2px solid #000; padding-bottom:3px;width: 100%">' . $bus['maghe'] . '</b></div> 
                                     ';
-                            } else {
-                                $output .= '
+                    } else {
+                        $output .= '
                                         <div class=" bg-light " 
                                         style="border-radius: 15px 15px 0px 0px;
                                                 border: 2px solid black;
@@ -212,14 +213,14 @@ class ticketClientController extends Controller
                                                 flex: 0 0 auto;
                                                 "  ><b style=" border-bottom: 2px solid #000; padding-bottom:3px;width: 100%">' . $bus['maghe'] . '</b></div> 
                                         ';
-                            }
-                        }
-
-                        // $output .= '<option value ="' . $district->idqh . '">' . $district->name_district . '</option>';
                     }
                 }
-            // }
-            echo ($output);
+
+                // $output .= '<option value ="' . $district->idqh . '">' . $district->name_district . '</option>';
+            }
+        }
+        // }
+        echo ($output);
         // }
     }
     public function booking(bookingRequest $request)
@@ -259,13 +260,9 @@ class ticketClientController extends Controller
                     $email->subject('BUSLINE');
                     $email->to(auth('client')->user()->email, $name);
                 });
-                // dd($name);
-                // $chair =  chairModel::where('idghe', $buss['idghe'])->where('maghe', $data['maghe'])->first();
-                // dd($buss['datcho']);
+               
                 $data['idghe'] = $buss['idghe'];
                 $data['TTV'] = 0;
-                // $data['TTTT'] = 0;
-                // dd($data);
 
                 $data['idkh'] = auth('client')->user()->idkh;
                 ticketModel::create($data);
@@ -308,5 +305,12 @@ class ticketClientController extends Controller
             }
             echo ($output);
         }
+    }
+    public function rating(Request $request)
+    {
+        
+        $data = $request->all();
+
+        echo ("Success");
     }
 }

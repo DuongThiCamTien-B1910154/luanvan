@@ -22,7 +22,6 @@
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://kit.fontawesome.com/fa204eeff7.js" crossorigin="anonymous"></script>
 
-    <link rel="shortcut icon" href="./img/favicon.ico" type="image/x-icon">
 
     <!-- @@04/06 -->
 
