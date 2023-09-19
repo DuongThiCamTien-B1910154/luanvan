@@ -30,7 +30,6 @@ $stt = 1;
             <div class="col-6 row bg-white">
                 <!-- day la noi dung -->
                 @foreach ($seats as $seat)
-                @if($seat->idkh == auth('client')->user()->idkh)
                 <div class="col-md-12 ">
                     <hr>
                     <h4 class=" text-uppercase " style="margin-bottom: 20px; float: right;">Ngày Đặt: {{$seat->created_at}} </h4>
@@ -98,7 +97,7 @@ $stt = 1;
                                 </tr>
                                 <tr>
                                     <td><label for="id_c_ng_g_x">Xe:</label></td>
-                                    <td> <input type="text" id="gia" name="gia" readonly value="{{$seat->bienso}} - {{$seat->tenloai}}">
+                                    <td><input type="text" id="gia" name="gia" readonly value="{{$seat->bienso}} - {{$seat->tenloai}}">
 
                                     </td>
                                 </tr>
@@ -127,28 +126,59 @@ $stt = 1;
                                 <a href="{{asset('client/history/deleteTicket')}}/{{$seat->idghe}}" class="btn btn-danger" style="margin-left: 35%;" onclick="return confirm('Bạn có chắc muốn xóa không?')">
                                     Xóa
                                 </a>
-                                <a href="#" data-toggle="modal" data-target="#ModalCreateRating" class="btn btn-primary data-key">
+                                <!-- @if ($seat->rate == 0)
+                                <div data-toggle="modal" data-target="#ModalCreateRating" class="btn btn-primary id_rating" id="{{$seat->id_c_ng_g_x}}">
                                     Đánh giá
-                                </a>
+                                </div>
+                                @else 
+                                <div data-toggle="modal" data-target="#ModalReviewRating" class="btn btn-primary id_rating" id="{{$seat->id_c_ng_g_x}}">
+                                    Xem đánh giá
+                                </div>
+                                @endif -->
+
+                                @if ($rates->isEmpty())
+                                <div data-toggle="modal" data-target="#ModalCreateRating" class="btn btn-primary id_rating 1 " id="{{$seat->idghe}}">
+                                    Đánh giá
+                                </div>
+                                @else
+                                    @foreach ($rates as $rate)
+                                        @if ($rate->id_c_ng_g_x == $seat->id_c_ng_g_x )
+                                            <div data-toggle="modal" data-target="#ModalReviewRating" class="btn btn-primary id_rating_view 2" id="{{$seat->idghe}}">
+                                                Xem đánh giá
+                                            </div>
+                                            <input type="hidden" value="{{$rate->rating}}" class="rating_number">
+                                            <input type="hidden" value="{{$rate->noidungbl}}" class="rating_content ">
+                                        @endif
+                                    @endforeach
+                                    @if($seat->rate == 0)
+                                        <div data-toggle="modal" data-target="#ModalCreateRating" class="btn btn-primary id_rating 1 " id="{{$seat->idghe}}">
+                                            Đánh giá
+                                        </div>
+                                    @endif
+                                @endif
+
+                                <!-- <input type="text" value="{{$seat->idghe}}" id="{{$seat->idghe}}" class="idghe"> -->
+                                <input type="hidden" value="5" class="number_rating">
+
+                                <input type="hidden" value="{{auth('client')->user()->idkh}}" class="idkh">
                             </td>
                             <td class="text-danger btn " style="height: 70px;">
 
                             </td>
-                            @elseif ($seat->TTV == -1  )
+                            @elseif ($seat->TTV == -1 )
                             <td class=" btn " style="height: 70px;">
                                 <a href="{{asset('client/history/deleteTicket')}}/{{$seat->idghe}}" class="btn btn-danger" style="margin-left: 40%;" onclick="return confirm('Bạn có chắc muốn xóa không?')">
                                     Xóa
                                 </a>
                             </td>
                             <td class="text-danger btn " style="height: 70px;">
-                               
+
                             </td>
                             @endif
 
                         </form>
                     </div>
                 </div>
-                @endif
                 @endforeach
 
 
@@ -159,8 +189,10 @@ $stt = 1;
             <div class="col-3"></div>
 
         </div>
+        
         <br>
         @include('client.ticket.modal.createModalRating')
+        @include('client.ticket.modal.reviewModalRating')
         <!-- noi dung -->
         @include('client.layout.footer')
         <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>

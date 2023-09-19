@@ -486,6 +486,8 @@ class ticketController extends Controller
         $data['idghe'] = $buss['idghe'];
         $data['TTV'] = 1;
         $data['PTTT'] = 0;
+        $data['rate'] = 0;
+
         // dd($data);
 
         ticketModel::create($data);

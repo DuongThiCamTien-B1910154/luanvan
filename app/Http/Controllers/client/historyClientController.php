@@ -4,9 +4,11 @@ namespace App\Http\Controllers\client;
 
 use App\Http\Controllers\Controller;
 use App\Models\chairModel;
+use App\Models\ratingModel;
 use App\Models\ticketModel;
 use App\Models\tripDayTimeBusModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class historyClientController extends Controller
 {
@@ -15,6 +17,12 @@ class historyClientController extends Controller
         // $ticket = ticketModel::join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'vexe.id_c_ng_g_x')
         //     ->join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')
         //     ->where('idkh', $id)->get();
+        $idkh = auth('client')->user()->idkh;
+        //     // ->join('nhanxet', 'nhanxet.id_c_ng_g_x', '=', 'c_ng_g_x.id_c_ng_g_x')
+        $rates = ratingModel::join('vexe', 'vexe.idghe', '=', 'nhanxet.idghe')
+            ->where('vexe.idkh', $idkh)
+            ->where('TTV', $id)->get();
+            // dd($rates);
         $seats = chairModel::join('vexe', 'vexe.idghe', '=', 'ghe.idghe')
             ->join('xe', 'xe.idxe', '=', 'ghe.idxe')
             ->join('loaixe', 'loaixe.idlx', '=', 'xe.idlx')
@@ -23,8 +31,8 @@ class historyClientController extends Controller
             ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
             ->join('gio', 'gio.idgio', '=', 'c_ng_g_x.idgio')
             ->join('tuyen', 'tuyen.idtuyen', '=', 'chuyen.idtuyen')
+            ->where('vexe.idkh', $idkh)
             ->where('TTV', $id)->orderBy('ngaychay', 'desc')->get();
-
         // $temp = ticketModel::where('TTV',$id)->get(); 
         // $seats = chairModel::join('vexe', 'vexe.idghe', '=', 'ghe.idghe')
         //     ->join('xe', 'xe.idxe', '=', 'ghe.idxe')
@@ -32,8 +40,12 @@ class historyClientController extends Controller
         //     ->join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'vexe.id_c_ng_g_x')
 
         //     ->where('TTV', $id)->where('idkh', 1)->get();
+        // dd($rates);
+        // if(($rates->isEmpty())){
+        //     dd($rates);
+        // }
         // dd($seats);
-        return view('client.ticket.history', compact('seats'));
+        return view('client.ticket.history', compact('seats','rates'));
     }
 
     public function deleteSeat($id)

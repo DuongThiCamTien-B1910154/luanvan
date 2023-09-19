@@ -12,6 +12,7 @@ use App\Models\busModel;
 use App\Models\chairModel;
 use App\Models\clientModel;
 use App\Models\dayModel;
+use App\Models\ratingModel;
 use App\Models\ticketModel;
 use App\Models\timeModel;
 use App\Models\tripDayTimeBusModel;
@@ -244,6 +245,7 @@ class ticketClientController extends Controller
 
                 $data['idghe'] = $buss['idghe'];
                 $data['TTV'] = 0;
+                $data['rate'] = 0;
                 $data['PTTT'] = 0;
 
                 ticketModel::create($data);
@@ -260,9 +262,10 @@ class ticketClientController extends Controller
                     $email->subject('BUSLINE');
                     $email->to(auth('client')->user()->email, $name);
                 });
-               
+
                 $data['idghe'] = $buss['idghe'];
                 $data['TTV'] = 0;
+                $data['rate'] = 0;
 
                 $data['idkh'] = auth('client')->user()->idkh;
                 ticketModel::create($data);
@@ -308,9 +311,23 @@ class ticketClientController extends Controller
     }
     public function rating(Request $request)
     {
-        
         $data = $request->all();
-
-        echo ("Success");
+        // echo ($data['idghe']);
+        $data_id = ticketModel::join('ghe', 'ghe.idghe', '=', 'vexe.idghe')
+            ->where('ghe.idghe', $data['idghe'])
+            ->where('TTV', 2)->get('id_c_ng_g_x')->first();
+        // ->exists();
+        $data['id_c_ng_g_x'] =  $data_id->id_c_ng_g_x;
+        $check = ratingModel::where('id_c_ng_g_x', $data_id->id_c_ng_g_x)->where('idghe', $data['idghe'])->exists();
+        if ($check) {
+            echo ("err");
+        } else {
+            ratingModel::create($data);
+            ticketModel::where('idkh', $data['idkh'])->where('TTV', 2)->where('id_c_ng_g_x', $data['id_c_ng_g_x'])->update([
+                'rate' => 1,
+            ]);
+            echo ("success");
+        }
+        // $data['maghe'];
     }
 }

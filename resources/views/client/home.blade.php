@@ -4,7 +4,7 @@
 @include('client.layout.header')
 
 
-<body class="preloading">
+<body class="preloading" >
 
     @include('client.layout.nav')
     <div class="main">

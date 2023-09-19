@@ -73,47 +73,42 @@
 
         //  route
         $('.findRoute').on('change', function() {
-                var action = $(this).attr('id');
-                var ma = $(this).val();
-                var _token = $('input[name="_token"]').val();
-                var result = '';
-                if (action == 'route') {
-                    result = 'time';
-                } else if (action == 'time') {
-                    result = 'day';
-                } else {
-                    action = ''
-                }
-                // console.log(action);
-                // console.log(ma);
-
-                if (action != '') {
-                    $.ajax({
-                        method: "POST",
-                        url: '{{url("/client/ticket/findRoute")}}',
-                        data: {
-                            action: action,
-                            ma: ma,
-                            _token: _token,
-                        },
-                        success: function(data) {
-                            $('#' + result).html(data);
-                            // console.log((result)); 
-                        }
-                    });
-                }
-
-
+            var action = $(this).attr('id');
+            var ma = $(this).val();
+            var _token = $('input[name="_token"]').val();
+            var result = '';
+            if (action == 'route') {
+                result = 'time';
+            } else if (action == 'time') {
+                result = 'day';
+            } else {
+                action = ''
             }
-
-        );
-
+            if (action != '') {
+                $.ajax({
+                    method: "POST",
+                    url: '{{url("/client/ticket/findRoute")}}',
+                    data: {
+                        action: action,
+                        ma: ma,
+                        _token: _token,
+                    },
+                    success: function(data) {
+                        $('#' + result).html(data);
+                        // console.log((result)); 
+                    }
+                });
+            }
+        });
         //  rating submit
         $(".rating_bus").click(function(e) {
             event.preventDefault()
+            var idkh = $(".idkh").val()
+            var idghe = $(".idghe").val()
             var content = $(".content").val();
             var number = $(".number_rating").val()
             var _token = $('input[name="_token"]').val();
+            console.log(number)
             if (!number) {
                 alert("Vui lòng chọn đánh giá !");
             } else(
@@ -121,21 +116,80 @@
                     method: "POST",
                     url: '{{url("/client/ticket/rating")}}',
                     data: {
-                        number: number,
-                        content: content,
+                        idghe: idghe,
+                        idkh: idkh,
+                        noidungbl: content,
+                        rating: number,
                         _token: _token,
                     },
                     success: function(data) {
-                        alert("Đánh giá thành công");
-                        $('#ModalCreateRating').modal().hide()
-                        $('.modal-backdrop').remove();
+                        console.log('asjfdhuidf')
+                        console.log(data)
+                        if (data == "err") {
+                            alert("Bạn đã đánh giá trước đó!");
+                        } else {
+                            alert("Đánh giá thành công");
+                            $('#ModalCreateRating').modal().hide()
+                            $('.modal-backdrop').remove()
+                            $('body').removeClass('modal-open');
+                        }
+
+                        // $('body').removeAttr("style");
+                        // $('.idkh').click()
+
                     }
                 })
             )
+        })
 
+        // get id_rating 
+        $('.id_rating').on('click' , function() {
+            var idghe = $(this).attr('id')
+            var number = 5
+            $(".idghe").val(idghe)
+            $(".rating_number").val()
+            listRatingText = {
+                1: 'Không thích',
+                2: 'Tạm được',
+                3: 'Bình thường',
+                4: 'Tốt',
+                5: 'Rất tốt',
+            };
+            let $this = $(this);
+            let listStart = $(".list_start .fa");
+            $.each(listStart, function(key, value) {
+                if (key + 1 <=number) {
+                    $(this).addClass('rating_active')
+                }
+            })
+            $(".list_text").text('').text(listRatingText[5]).show()
+        })
+       
+
+        // review rating
+        $('.id_rating_view').on('click', function() {
+            listRatingText = {
+                1: 'Không thích',
+                2: 'Tạm được',
+                3: 'Bình thường',
+                4: 'Tốt',
+                5: 'Rất tốt',
+            };
+            let $this = $(this);
+            var number = $(".rating_number").val()
+            var content = $(".rating_content").val()
+            let listStart = $(".list_start_review .fa");
+            listStart.removeClass('rating_active')
+            $.each(listStart, function(key, value) {
+                if (key + 1 <= number) {
+                    $(this).addClass('rating_active_review')
+                }
+            })
+            $(".content_review").text(content)
+            $(".list_text").text('').text(listRatingText[number]).show()
         })
     });
-
+    // load seat when submit err
     function hide_show(privateTeam) {
         if (privateTeam != 0) {
             var action = $(this).attr('id');

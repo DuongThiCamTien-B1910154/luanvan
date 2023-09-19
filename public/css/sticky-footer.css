@@ -21,6 +21,9 @@
 .list_start .rating_active {
     color: yellow;
 }
+.rating_active_review {
+    color: yellow;
+}
 /* .list_text::after{
     
     border: solid transparent;

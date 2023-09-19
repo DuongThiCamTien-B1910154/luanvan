@@ -21,6 +21,7 @@ class ticketModel extends Model
         'tennd2',
         'note',
         'PTTT',
-        'TTV'
+        'TTV',
+        'rate'
     ];
 }
