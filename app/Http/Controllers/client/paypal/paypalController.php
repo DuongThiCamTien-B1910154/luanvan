@@ -121,6 +121,7 @@ class paypalController extends Controller
                 $success = "Chúng tôi sẽ gọi đến số điện thoại của quý khách để xác nhận!";
                 $data['idghe'] = $buss['idghe'];
                 $data['TTV'] = 0;
+                $data['rate'] = 0;
                 ticketModel::create($data);
                 chairModel::find($buss['idghe'])->update([
                     'datcho' => 1,
@@ -136,6 +137,8 @@ class paypalController extends Controller
             });
             $data['idghe'] = $buss['idghe'];
             $data['TTV'] = 0;
+            $data['rate'] = 0;
+
             $data['idkh'] = auth('client')->user()->idkh;
             ticketModel::create($data);
             chairModel::find($buss['idghe'])->update([

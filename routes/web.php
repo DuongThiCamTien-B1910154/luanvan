@@ -15,6 +15,7 @@ use App\Http\Controllers\client\scheduleController;
 use App\Http\Controllers\client\userClientController;
 use App\Http\Controllers\client\ticketClientController;
 use App\Http\Controllers\client\historyClientController;
+use App\Http\Controllers\client\momo\momoController;
 use App\Http\Controllers\client\paypal\paypalController;
 
 use App\Models\busModel;
@@ -154,8 +155,11 @@ Route::prefix('/client')->name('client.')->group(function () {
     // Route::get('/ticket/{id?}', [ticketController::class, 'showTicket']);
 });
 
+// paypal
 Route::get('process-transaction', [paypalController::class, 'processTransaction'])->name('processTransaction');
 Route::get('success-transaction', [paypalController::class, 'successTransaction'])->name('successTransaction');
 Route::get('cancel-transaction', [paypalController::class, 'cancelTransaction'])->name('cancelTransaction');
+// momo
+Route::get('momoPay', [momoController::class, 'momoPay'])->name('momoPay');;
 
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

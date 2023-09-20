@@ -12,6 +12,7 @@ use App\Models\typeBusModel;
 use App\Models\User;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,7 +33,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Paginator::useBootstrap();
         $posi = new positionModel();
         $position = $posi->getAllPosition();
         //
@@ -53,6 +54,6 @@ class AppServiceProvider extends ServiceProvider
 
         $admin = new adminModel();
         $admins = $admin->getAllAdmin();
-        View::share(compact('position', 'province', 'district', 'town', 'typeBus', 'users','admins'));
+        View::share(compact('position', 'province', 'district', 'town', 'typeBus', 'users', 'admins'));
     }
 }

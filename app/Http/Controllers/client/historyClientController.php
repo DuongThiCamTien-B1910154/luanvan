@@ -32,7 +32,7 @@ class historyClientController extends Controller
             ->join('gio', 'gio.idgio', '=', 'c_ng_g_x.idgio')
             ->join('tuyen', 'tuyen.idtuyen', '=', 'chuyen.idtuyen')
             ->where('vexe.idkh', $idkh)
-            ->where('TTV', $id)->orderBy('ngaychay', 'desc')->get();
+            ->where('TTV', $id)->orderBy('ngaychay', 'desc')->paginate(2);
         // $temp = ticketModel::where('TTV',$id)->get(); 
         // $seats = chairModel::join('vexe', 'vexe.idghe', '=', 'ghe.idghe')
         //     ->join('xe', 'xe.idxe', '=', 'ghe.idxe')

@@ -90,7 +90,6 @@
                     <button type="button" class="btn btn-primary " onclick="document.getElementById('form-id').submit();">Tìm xe</button>
                 </form>
 
-
                 <!-- het noi dung -->
             </div>
             <div class="col-1"></div>

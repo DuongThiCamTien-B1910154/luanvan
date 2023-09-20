@@ -228,6 +228,7 @@ class ticketClientController extends Controller
     {
 
         $data = $request->all();
+        // dd($data);
         $check = chairModel::join('c_ng_g_x', 'ghe.idxe', '=', 'c_ng_g_x.idxe')->where('id_c_ng_g_x', $data['id_c_ng_g_x'])->where('maghe', $data['maghe'])->exists();
         if (!$check) {
             $error = "Vui lòng điền chỗ ngồi phù hợp với mã ghế theo sơ đồ ghế bên cạnh!";
@@ -258,7 +259,7 @@ class ticketClientController extends Controller
                     ->where('idkh', auth('client')->user()->idkh)->first();
                 $name = $user->tennd;
                 // dd(auth('client')->user()->email);
-                Mail::send('client.email.sendMail', compact('name'), function ($email) use ($name) {
+                \Illuminate\Support\Facades\Mail::send('client.email.sendMail', compact('name'), function ($email) use ($name) {
                     $email->subject('BUSLINE');
                     $email->to(auth('client')->user()->email, $name);
                 });
@@ -274,6 +275,13 @@ class ticketClientController extends Controller
                 ]);
                 return redirect('client/history/0');
             }
+        }elseif ($data['PTTT'] == 2) {
+
+            Session::put('data', $data);
+            // gia quy doi khong dung vi so nhieu lan test het tien
+            $giave = round($data['giave'] / 22000000, 2);
+            // dd($giave);
+            return redirect()->route('momoPay', ['giave' => $giave]);
         } else {
             Session::put('data', $data);
             // gia quy doi khong dung vi so nhieu lan test het tien

@@ -141,20 +141,20 @@ $stt = 1;
                                     Đánh giá
                                 </div>
                                 @else
-                                    @foreach ($rates as $rate)
-                                        @if ($rate->id_c_ng_g_x == $seat->id_c_ng_g_x )
-                                            <div data-toggle="modal" data-target="#ModalReviewRating" class="btn btn-primary id_rating_view 2" id="{{$seat->idghe}}">
-                                                Xem đánh giá
-                                            </div>
-                                            <input type="hidden" value="{{$rate->rating}}" class="rating_number">
-                                            <input type="hidden" value="{{$rate->noidungbl}}" class="rating_content ">
-                                        @endif
-                                    @endforeach
-                                    @if($seat->rate == 0)
-                                        <div data-toggle="modal" data-target="#ModalCreateRating" class="btn btn-primary id_rating 1 " id="{{$seat->idghe}}">
-                                            Đánh giá
-                                        </div>
-                                    @endif
+                                @foreach ($rates as $rate)
+                                @if ($rate->id_c_ng_g_x == $seat->id_c_ng_g_x )
+                                <div data-toggle="modal" data-target="#ModalReviewRating" class="btn btn-primary id_rating_view 2" id="{{$seat->idghe}}">
+                                    Xem đánh giá
+                                </div>
+                                <input type="hidden" value="{{$rate->rating}}" class="rating_number">
+                                <input type="hidden" value="{{$rate->noidungbl}}" class="rating_content ">
+                                @endif
+                                @endforeach
+                                @if($seat->rate == 0)
+                                <div data-toggle="modal" data-target="#ModalCreateRating" class="btn btn-primary id_rating 1 " id="{{$seat->idghe}}">
+                                    Đánh giá
+                                </div>
+                                @endif
                                 @endif
 
                                 <!-- <input type="text" value="{{$seat->idghe}}" id="{{$seat->idghe}}" class="idghe"> -->
@@ -180,16 +180,16 @@ $stt = 1;
                     </div>
                 </div>
                 @endforeach
-
-
-
+                
                 <div class="col-2"></div>
                 <!-- het noi dung -->
             </div>
             <div class="col-3"></div>
+            
+            <div style="margin-left: 40%;">{{$seats->onEachSide(1)->links()}}</div>
 
+            
         </div>
-        
         <br>
         @include('client.ticket.modal.createModalRating')
         @include('client.ticket.modal.reviewModalRating')

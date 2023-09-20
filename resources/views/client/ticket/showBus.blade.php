@@ -164,6 +164,7 @@ foreach ($users as $key => $user) {
                                             <select name="PTTT" class="p-1 w-100">
                                                 <option value="0" {{ old('PTTT') == '0' ? 'selected' : '' }}>Thanh toán khi nhận vé</option>
                                                 <option value="1" {{ old('PTTT') == '1' ? 'selected' : '' }}>Thanh toán với <b><i>PAYPAL</i></b></option>
+                                                <option value="2" {{ old('PTTT') == '2' ? 'selected' : '' }}>Thanh toán với <b><i>MOMO</i></b></option>
                                             </select>
 
                                         </td>
