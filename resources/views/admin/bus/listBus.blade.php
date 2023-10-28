@@ -8,7 +8,7 @@
         font-weight: bold;
         text-transform: uppercase;
         text-align: center;
-        
+
     }
 </style>
 
@@ -59,7 +59,7 @@
 
                 </div>
             </div>
-        
+
 
             @if (session('success'))
             <div class="alert alert-success">
@@ -80,6 +80,7 @@
                         <th>Hình ảnh </th>
                         <th>Năm SX</th>
                         <th>Loại xe</th>
+                        <th>Đánh giá</th>
                         <th style="width: 100px;">Tùy chọn</th>
                     </tr>
                 </thead>
@@ -100,11 +101,13 @@
                         <td>{{$type->tenloai}}</td>
                         @endif
                         @endforeach
-
+                        
+                        <td   >
+                            <a href="{{asset('admin/bus/viewRate')}}/{{$data->idxe}}">Xem đánh giá</a>
+                        </td>
                         <form action="" method="post">
                             <td class="text-primary btn" style="height: 70px;">
                                 <a href="{{asset('admin/bus/editBus')}}/{{$data->idxe}}"><i class="fa-solid fa-pen-to-square mt-2"></i></a>
-
                             </td>
                             <td class="text-danger btn " style="height: 70px;">
                                 @csrf

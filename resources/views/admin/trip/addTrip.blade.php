@@ -53,11 +53,18 @@
                         <form action="" enctype=" multipart/form-data" method="POST">
                             @csrf
                             <div class="form-group">
+                                <label for="">Ngày chạy:</label>
+                                <input type="date" class="form-control dateRun" id="dateRun" name="ngaychay">
+                                @error('ngaychay')
+                                <span style="color: red;">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            <div class="form-group">
                                 <label for="diemKH">Chạy tuyến: </label>
                                 <select name="idtuyen" id="">
                                     <option value="">--- Chọn ---</option>
                                     @foreach ($routes as $route)
-                                    <option value="{{$route->idtuyen}}">{{$route->tentuyen}}</option>
+                                    <option value="{{$route->idtuyen}}" class="w-100">{{$route->tentuyen}}</option>
                                     @endforeach
                                 </select>
 
@@ -68,10 +75,10 @@
 
                             <div class="form-group">
                                 <label for="idxe">Xe chạy: &nbsp;&nbsp; </label>
-                                <select name="idxe" id="">
+                                <select name="idxe" id="idxe">
                                     <option value="">--- Chọn ---</option>
                                     @foreach ($buss as $bus)
-                                    <option value="{{$bus->idxe}}">{{$bus->bienso}} - {{$bus->tenloai}}</option>
+                                    <option value="{{$bus->idxe}}" class="w-100">{{$bus->bienso}} - {{$bus->tenloai}}</option>
                                     @endforeach
                                 </select>
                                 @error('idxe')
@@ -85,25 +92,17 @@
                                 <span style="color: red;">{{ $message }}</span>
                                 @enderror
                             </div>
-                            <div class="form-group">
-                                <label for="">Ngày chạy:</label>
-                                <input type="date" class="form-control" id="" name="ngaychay">
-                                @error('ngaychay')
-                                <span style="color: red;">{{ $message }}</span>
-                                @enderror
-                            </div>
+                            
                             <div class="form-group">
                                 <label for="">Tài xế: &nbsp;&nbsp; </label>
                                 <select name="idadmin" id="">
                                     <option value="">--- Chọn ---</option>
-                                    @foreach ($admins as $admin)
-                                    @if($admin->idcv == 4)
-                                    @foreach ($users as $user)
-                                    @if ($user->idnd == $admin->idnd)
-                                    <option value="{{$admin->idadmin}}">{{$user ->tennd}}</option>
-                                    @endif
-                                    @endforeach
-                                    @endif
+                                    @foreach ($drivers as $driver)
+                                        @foreach ($users as $user)
+                                            @if ($user->idnd == $driver->idnd)
+                                            <option value="{{$driver->idadmin}}">{{$user ->tennd}}</option>
+                                            @endif
+                                        @endforeach
                                     @endforeach
                                 </select>
                                 @error('idadmin')

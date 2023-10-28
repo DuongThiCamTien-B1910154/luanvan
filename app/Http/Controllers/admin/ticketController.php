@@ -5,12 +5,17 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\admin\bookingRequest;
 use App\Models\adminModel;
+use App\Models\bankingModel;
 use App\Models\chairModel;
+use App\Models\clientModel;
 use App\Models\routeModel;
+use App\Models\statisticModel;
 use App\Models\tripDayTimeBusModel;
 use Illuminate\Http\Request;
 use App\Models\busModel;
 use App\Models\dayModel;
+use App\Models\historyApproveModel;
+use App\Models\orderModel;
 use App\Models\ticketModel;
 use App\Models\timeModel;
 use App\Models\tripModel;
@@ -29,55 +34,105 @@ class ticketController extends Controller
         $search = $request['search'] ?? "";
 
         if ($search != "") {
-            $tickets = chairModel::join('vexe', 'vexe.idghe', '=', 'ghe.idghe')
-                ->join('xe', 'xe.idxe', '=', 'ghe.idxe')
+            $tickets = orderModel::join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'datcho.id_c_ng_g_x')
+                ->join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')
                 ->join('loaixe', 'loaixe.idlx', '=', 'xe.idlx')
-                ->join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'vexe.id_c_ng_g_x')
                 ->join('chuyen', 'chuyen.idchuyen', '=', 'c_ng_g_x.idchuyen')
                 ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
                 ->join('gio', 'gio.idgio', '=', 'c_ng_g_x.idgio')
                 ->join('tuyen', 'tuyen.idtuyen', '=', 'chuyen.idtuyen')
-                ->orderBy('TTV', 'asc')->where('TTV', '>=', '0')
+                ->join('trangthaive', 'trangthaive.idttv', '=', 'datcho.idttv')
                 ->where('sdt2', 'LIKE', "%$search%")
                 ->orWhere('tennd2', 'LIKE', "%$search%")
                 ->orWhere('tentuyen', 'LIKE', "%$search%")
-                ->orderBy('TTV', 'asc')->get();
+                ->orderBy('datcho.idttv', 'asc')
+                // ->where('datcho.idttv', '!=', '4')
+                ->where('datcho.idttv', '!=', '0')
+                ->where('datcho.del', '!=', '1')
+                ->get();
         } else {
-            $tickets = chairModel::join('vexe', 'vexe.idghe', '=', 'ghe.idghe')
-                ->join('xe', 'xe.idxe', '=', 'ghe.idxe')
+            // $tickets = ticketModel::join('datcho', 'datcho.iddc', '=', 'chitietdatcho.iddc')
+            //     ->join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'datcho.id_c_ng_g_x')
+            //     ->join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')
+            //     ->join('loaixe', 'loaixe.idlx', '=', 'xe.idlx')
+            //     ->join('chuyen', 'chuyen.idchuyen', '=', 'c_ng_g_x.idchuyen')
+            //     ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
+            //     ->join('gio', 'gio.idgio', '=', 'c_ng_g_x.idgio')
+            //     ->join('tuyen', 'tuyen.idtuyen', '=', 'chuyen.idtuyen')
+            //     ->orderBy('TTV', 'asc')->where('TTV', '>=', '0')->get();
+
+            $tickets = orderModel::join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'datcho.id_c_ng_g_x')
+                ->join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')
                 ->join('loaixe', 'loaixe.idlx', '=', 'xe.idlx')
-                ->join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'vexe.id_c_ng_g_x')
                 ->join('chuyen', 'chuyen.idchuyen', '=', 'c_ng_g_x.idchuyen')
                 ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
                 ->join('gio', 'gio.idgio', '=', 'c_ng_g_x.idgio')
                 ->join('tuyen', 'tuyen.idtuyen', '=', 'chuyen.idtuyen')
-                ->orderBy('TTV', 'asc')->where('TTV', '>=', '0')->get();
+                ->join('trangthaive', 'trangthaive.idttv', '=', 'datcho.idttv')
+                ->orderBy('datcho.idttv', 'asc')
+                // ->where('datcho.idttv', '!=', '4')
+                ->where('datcho.idttv', '!=', '0')
+                ->where('datcho.del', '!=', '1')
+                ->get();
         }
         // $test = ticketModel::all();
         // dd($tickets);
         return view('admin.ticket.listTicket', compact('tickets', 'search'));
     }
-    public function detailTicket($id)
+    public function detailTicket($iddc)
     {
-        $ticket = chairModel::join('vexe', 'vexe.idghe', '=', 'ghe.idghe')
-            ->join('xe', 'xe.idxe', '=', 'ghe.idxe')
+        // dd($iddc);
+        // $ticket = chairModel::join('vexe', 'vexe.idghe', '=', 'ghe.idghe')
+        //     ->join('xe', 'xe.idxe', '=', 'ghe.idxe')
+        //     ->join('loaixe', 'loaixe.idlx', '=', 'xe.idlx')
+        //     ->join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'vexe.id_c_ng_g_x')
+        //     ->join('chuyen', 'chuyen.idchuyen', '=', 'c_ng_g_x.idchuyen')
+        //     ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
+        //     ->join('gio', 'gio.idgio', '=', 'c_ng_g_x.idgio')
+        //     ->join('tuyen', 'tuyen.idtuyen', '=', 'chuyen.idtuyen')
+        //     ->where('idvx', $id)->first();
+
+        //     $seats = orderModel::join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'datcho.id_c_ng_g_x')
+        //     ->join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')
+        //     ->join('loaixe', 'loaixe.idlx', '=', 'xe.idlx')
+        //     ->join('chuyen', 'chuyen.idchuyen', '=', 'c_ng_g_x.idchuyen')
+        //     ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
+        //     ->join('gio', 'gio.idgio', '=', 'c_ng_g_x.idgio')
+        //     ->join('tuyen', 'tuyen.idtuyen', '=', 'chuyen.idtuyen')
+        //     ->where('datcho.idkh', $idkh)
+        //     ->where('TTV', $ttv)->orderBy('ngaychay', 'desc')->paginate(2);
+        $chairs = orderModel::join('chitietdatcho', 'chitietdatcho.iddc', '=', 'datcho.iddc')
+            ->join('ghe', 'ghe.idghe', '=', 'chitietdatcho.idghe')
+            ->where('datcho.iddc', $iddc)->get();
+        // dd($chairs);
+
+        // $ticket = ticketModel::join('datcho', 'datcho.iddc', '=', 'chitietdatcho.iddc')
+        //     ->join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'datcho.id_c_ng_g_x')
+        //     ->join('ghe', 'ghe.idxe', '=', 'c_ng_g_x.idxe')
+        //     ->join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')
+        //     ->join('loaixe', 'loaixe.idlx', '=', 'xe.idlx')
+        //     ->join('chuyen', 'chuyen.idchuyen', '=', 'c_ng_g_x.idchuyen')
+        //     ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
+        //     ->join('gio', 'gio.idgio', '=', 'c_ng_g_x.idgio')
+        //     ->join('tuyen', 'tuyen.idtuyen', '=', 'chuyen.idtuyen')
+        //     ->where('idvx', $id)->first();
+        $ticket = orderModel::join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'datcho.id_c_ng_g_x')
+            ->join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')
             ->join('loaixe', 'loaixe.idlx', '=', 'xe.idlx')
-            ->join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'vexe.id_c_ng_g_x')
             ->join('chuyen', 'chuyen.idchuyen', '=', 'c_ng_g_x.idchuyen')
             ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
             ->join('gio', 'gio.idgio', '=', 'c_ng_g_x.idgio')
             ->join('tuyen', 'tuyen.idtuyen', '=', 'chuyen.idtuyen')
-            ->where('idvx', $id)->first();
+            ->where('datcho.iddc', $iddc)->first();
 
-        // dd($ticket);
-
-        return view('admin.ticket.detailTicket', compact('ticket'));
+        $pttts = bankingModel::get();
+        return view('admin.ticket.detailTicket', compact('ticket', 'pttts', 'chairs'));
     }
     public function browseTicket($id)
     {
         // dd(12);
-        ticketModel::find($id)->update([
-            'TTV' => 1
+        orderModel::find($id)->update([
+            'idttv' => 2
         ]);
         return redirect()->back();
     }
@@ -85,45 +140,159 @@ class ticketController extends Controller
     public function deleteTicket($id)
     {
         // dd($id);
-        chairModel::find($id)->update([
-            'datcho' => 0,
-        ]);
+        // chairModel::find($id)->update([
+        //     'datcho' => 0,
+        // ]);
+        // ticketModel::where('idghe', $id)->delete();
         $success = "Xóa vé thành công!";
-        ticketModel::where('idghe', $id)->delete();
+        $data = orderModel::find($id)->first();
+        // dd($data['idttv']);
+        if ($data->idttv < 3) {
+            ticketModel::where('iddc', $id)->delete();
+            orderModel::find($id)->delete();
+        } else {
+            orderModel::find($id)->update([
+                'del' => 1
+            ]);
+        }
+
         return redirect()->back()->with('success', $success);
     }
 
 
-    public function invoice($idvx)
+    public function invoice($iddc)
     {
-        $data = ticketModel::where('idvx', $idvx)->first();
-
-        chairModel::find($data->idghe)->update([
-            'datcho' => 0,
-        ]);
-        ticketModel::where('idvx', $idvx)->update([
-            'TTV' => 2,
-        ]);
-        $pdf = App::make('dompdf.wrapper');
-        $pdf->loadHTML($this->print_convert($idvx));
-        return $pdf->stream();
-    }
-    public function print_convert($idvx)
-    {
+        // statistic
+        $money = orderModel::where('iddc', $iddc)->first('tongtien');
+        $day = orderModel::where('iddc', $iddc)
+        ->join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x','=', 'datcho.id_c_ng_g_x')
+        ->join('ngaychay','ngaychay.idngay','=', 'c_ng_g_x.idngay')
+        ->first('ngaychay');
+        $countTicket = ticketModel::where('iddc', $iddc)->count();
+        $isExist = statisticModel::where('ngayxechay', $day->ngaychay)->exists();
+        // dd($isExist);
+        if($isExist){
+            $sta = statisticModel::where('ngayxechay',$day->ngaychay)->first();
+            statisticModel::where('ngayxechay',$day->ngaychay)->update([
+                'tongtien' => $sta['tongtien']  + $money->tongtien,
+                'ngayxechay' => $day->ngaychay,
+                'soluongve' => $sta['soluongve']+ $countTicket,
+            ]);
+        }else{
+            $statis['tongtien'] = $money->tongtien;
+            $statis['ngayxechay'] = $day->ngaychay;
+            $statis['soluongve'] = $countTicket;
+            statisticModel::create($statis);
+        }
+        // ----------------invoice
         $idcv = Auth::guard('admin')->user()->idcv;
         $name = adminModel::join('nguoidung', 'nguoidung.idnd', 'admin.idnd')
             ->where('idcv', $idcv)->first();
-        $ticket = chairModel::join('vexe', 'vexe.idghe', '=', 'ghe.idghe')
-            ->join('xe', 'xe.idxe', '=', 'ghe.idxe')
+
+        $chairs = orderModel::join('chitietdatcho', 'chitietdatcho.iddc', '=', 'datcho.iddc')
+            ->join('ghe', 'ghe.idghe', '=', 'chitietdatcho.idghe')
+            ->where('datcho.iddc', $iddc)
+            ->get();
+        $ticket =  orderModel::join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'datcho.id_c_ng_g_x')
+            ->join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')
             ->join('loaixe', 'loaixe.idlx', '=', 'xe.idlx')
-            ->join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'vexe.id_c_ng_g_x')
             ->join('chuyen', 'chuyen.idchuyen', '=', 'c_ng_g_x.idchuyen')
             ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
             ->join('gio', 'gio.idgio', '=', 'c_ng_g_x.idgio')
             ->join('tuyen', 'tuyen.idtuyen', '=', 'chuyen.idtuyen')
-            // ->join('khachhang', 'khachhang.idkh', '=', 'vexe.idkh')
-            // ->join('nguoidung', 'nguoidung.idnd', '=', 'khachhang.idnd')
-            ->where('idvx', $idvx)->first();
+            ->where('datcho.iddc', $iddc)->first();
+        orderModel::where('iddc', $iddc)->update([
+            'idttv' => 3,
+        ]);
+        $data['idadmin'] = $name->idadmin;
+        $data['iddc'] = $iddc;
+        historyApproveModel::create($data);
+        // mail
+        if ($ticket->idkh != null) {
+            $user = clientModel::join('nguoidung', 'nguoidung.idnd', '=', 'khachhang.idnd')
+                ->where('idkh', $ticket->idkh)->first();
+            // $tennd = $user->tennd;
+            // dd($user->tennd);
+            // dd(auth('client')->user()->email);
+            \Illuminate\Support\Facades\Mail::send('admin.email.sendMail', compact('name'), function ($email) use ($user) {
+                $email->subject('BUSLINE');
+                $email->to($user->email, $user);
+            });
+        }
+
+        //  end  mail
+        $html = '';
+        foreach ($chairs as $chair) {
+            $view = view('admin.PDF.Invoice', ['ticket' => $ticket, 'iddc' => $iddc, 'name' => $name, 'chair' => $chair]);
+            $html .= $view->render();
+        }
+        $pdf = \PDF::loadHTML($html);
+        $sheet = $pdf->setPaper('a4', 'landscape');
+        return $sheet->download($iddc . '-Invoice.pdf');
+        // $ticket = orderModel::join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'datcho.id_c_ng_g_x')
+        //     ->join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')
+        //     ->join('loaixe', 'loaixe.idlx', '=', 'xe.idlx')
+        //     ->join('chuyen', 'chuyen.idchuyen', '=', 'c_ng_g_x.idchuyen')
+        //     ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
+        //     ->join('gio', 'gio.idgio', '=', 'c_ng_g_x.idgio')
+        //     ->join('tuyen', 'tuyen.idtuyen', '=', 'chuyen.idtuyen')
+        //     ->where('datcho.iddc', $iddc)->first();
+        // $idcv = Auth::guard('admin')->user()->idcv;
+        // $name = adminModel::join('nguoidung', 'nguoidung.idnd', 'admin.idnd')
+        //     ->where('idcv', $idcv)->first();
+        // $chairs = orderModel::join('chitietdatcho', 'chitietdatcho.iddc', '=', 'datcho.iddc')
+        //     ->join('ghe', 'ghe.idghe', '=', 'chitietdatcho.idghe')
+        //     ->where('datcho.iddc', $iddc)->get();
+        // $html = [];
+        // foreach ($chairs as $i => $result) {
+        //     $view = view('admin.PDF.Invoice', ['ticket' => $ticket, 'iddc' => $iddc, 'name' => $name]);
+        //     $html[$i] = $view->render();
+        // }
+        // foreach ($html as $htm) {
+        //     $pdf = \PDF::loadHtml($htm);
+        //     $sheet = $pdf->setPaper('a4', 'landscape');
+        //     $pdf->save('D:/' . $ticket['iddc'] . '.pdf');
+        //     return $sheet->stream();
+        // }
+    }
+    // khong con su dung
+    public function print_convert($iddc)
+    {
+        $idcv = Auth::guard('admin')->user()->idcv;
+        $name = adminModel::join('nguoidung', 'nguoidung.idnd', 'admin.idnd')
+            ->where('idcv', $idcv)->first();
+        // orderModel::where('iddc', $iddc)->update([
+        //     'idadmin' => $name->idadmin,
+        // ]);
+        // $ticket = chairModel::join('vexe', 'vexe.idghe', '=', 'ghe.idghe')
+        //     ->join('xe', 'xe.idxe', '=', 'ghe.idxe')
+        //     ->join('loaixe', 'loaixe.idlx', '=', 'xe.idlx')
+        //     ->join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'vexe.id_c_ng_g_x')
+        //     ->join('chuyen', 'chuyen.idchuyen', '=', 'c_ng_g_x.idchuyen')
+        //     ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
+        //     ->join('gio', 'gio.idgio', '=', 'c_ng_g_x.idgio')
+        //     ->join('tuyen', 'tuyen.idtuyen', '=', 'chuyen.idtuyen')
+        //     ->where('idvx', $idvx)->first();
+        // $ticket = ticketModel::join('datcho', 'datcho.iddc', '=', 'chitietdatcho.iddc')
+        //     ->join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'datcho.id_c_ng_g_x')
+        //     ->join('ghe', 'ghe.idxe', '=', 'c_ng_g_x.idxe')
+        //     ->join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')
+        //     ->join('loaixe', 'loaixe.idlx', '=', 'xe.idlx')
+        //     ->join('chuyen', 'chuyen.idchuyen', '=', 'c_ng_g_x.idchuyen')
+        //     ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
+        //     ->join('gio', 'gio.idgio', '=', 'c_ng_g_x.idgio')
+        //     ->join('tuyen', 'tuyen.idtuyen', '=', 'chuyen.idtuyen')
+        //     ->where('idvx', $iddc)->first();
+
+
+        $ticket = orderModel::join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'datcho.id_c_ng_g_x')
+            ->join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')
+            ->join('loaixe', 'loaixe.idlx', '=', 'xe.idlx')
+            ->join('chuyen', 'chuyen.idchuyen', '=', 'c_ng_g_x.idchuyen')
+            ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
+            ->join('gio', 'gio.idgio', '=', 'c_ng_g_x.idgio')
+            ->join('tuyen', 'tuyen.idtuyen', '=', 'chuyen.idtuyen')
+            ->where('datcho.iddc', $iddc)->first();
 
         $output = '';
         $output .= '
@@ -141,7 +310,7 @@ class ticketController extends Controller
         }
         </style>
         <div class="col-md-12 ">
-            <div style="float: right;">Mã số: <b>' . $idvx . '</b><br>
+            <div style="float: right;">Mã số: <b>' . $iddc . '</b><br>
             Ký hiệu: <b>A0/945</b><br>
             Số: </div>
             <div class="" style="float: left;">
@@ -238,20 +407,36 @@ class ticketController extends Controller
     }
     public function findBus(Request $request)
     {
-        // echo (123456);
+     
+        // $data = $request->all();
+        // $check = tripModel::join('c_ng_g_x', 'c_ng_g_x.idchuyen', '=', 'chuyen.idchuyen')
+        //     ->where('idtuyen', $data['idtuyen'])
+        //     ->where('idgio', $data['idgio'])
+        //     ->where('idngay', $data['idngay'])
+        //     ->whereNotNull('idxe')
+        //     ->exists();
+        
+        // if (!$check) {
+        //     $error = "Không tìm thấy xe phù hợp!";
+        //     return redirect()->back()->with('error', $error);
+        // }
+
+        // $buss = tripModel::join('c_ng_g_x', 'c_ng_g_x.idchuyen', '=', 'chuyen.idchuyen')
+        //     ->join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')
+        //     ->join('loaixe', 'loaixe.idlx', '=', 'xe.idlx')
+        //     ->where('idtuyen', $data['idtuyen'])->where('idgio', $data['idgio'])->where('idngay', $data['idngay'])->get();
+        
+        // $route = tripModel::join('tuyen', 'chuyen.idtuyen', '=', 'tuyen.idtuyen')->where('tuyen.idtuyen', $data['idtuyen'])->distinct()->first();
         $data = $request->all();
+        $idtuyen = $data['idtuyen'] ;
+        $idgio = $data['idgio'] ;
+        $idngay  = $data['idngay'] ;
         $check = tripModel::join('c_ng_g_x', 'c_ng_g_x.idchuyen', '=', 'chuyen.idchuyen')
-            ->where('idtuyen', $data['idtuyen'])
-            ->where('idgio', $data['idgio'])
-            ->where('idngay', $data['idngay'])
+            ->where('idtuyen', $idtuyen)
+            ->where('idgio', $idgio)
+            ->where('idngay', $idngay)
             ->whereNotNull('idxe')
             ->exists();
-        // $trip = tripModel::where('idtuyen', $data['idtuyen'])->get();
-        // $check_day = tripModel::join('c_ng_g_x', 'c_ng_g_x.idchuyen', '=', 'chuyen.idchuyen')
-        //     ->where('idtuyen', $data['idtuyen'])
-        //     ->where('idngay', $data['idngay'])->exists();
-        // $check_time = tripDayTimeBusModel::where('idchuyen', $trip['idchuyen'])->where('idgio', $data['idgio'])->exists();
-        // $check_day = tripDayTimeBusModel::where('idchuyen', $trip['idchuyen'])->where('idngay', $data['idngay'])->exists();
         if (!$check) {
             $error = "Không tìm thấy xe phù hợp!";
             return redirect()->back()->with('error', $error);
@@ -259,45 +444,63 @@ class ticketController extends Controller
             // return view('client.ticket.showTicket', compact('error'));
             // dd(123);
         }
-
+        $pttts = bankingModel::get();
         $buss = tripModel::join('c_ng_g_x', 'c_ng_g_x.idchuyen', '=', 'chuyen.idchuyen')
             ->join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')
             ->join('loaixe', 'loaixe.idlx', '=', 'xe.idlx')
-            ->where('idtuyen', $data['idtuyen'])->where('idgio', $data['idgio'])->where('idngay', $data['idngay'])->get();
+            ->where('idtuyen', $idtuyen)->where('idgio', $idgio)->where('idngay', $idngay)->get();
         // dd($buss);
         // $user = clientModel::join('nguoidung', 'nguoidung.idnd', '=', 'khachhang.idnd')->get();
         // dd($user);
-        $route = tripModel::join('tuyen', 'chuyen.idtuyen', '=', 'tuyen.idtuyen')->where('tuyen.idtuyen', $data['idtuyen'])->distinct()->first();
-        // dd($route['giave']);
-
-        // return redirect()->action([historyClientController::class, 'showBusTicket'])->with(array(
-        //     'buss' => $buss,
-        //     'route' => $route
-        // ));
-        // dd($data);
-
-        return view('admin.ticket.showBus', compact('buss', 'route'));
+        $route = tripModel::join('tuyen', 'chuyen.idtuyen', '=', 'tuyen.idtuyen')->where('tuyen.idtuyen', $idtuyen)->distinct()->first();
+        $times = timeModel::where('idgio',$idgio)->first();
+        $days = dayModel::where('idngay',$idngay)->first();
+        // dd($route);
+        // return view('client.ticket.showBus', compact('buss', 'route', 'pttts','days','times'));
+        return view('admin.ticket.showBus', compact('buss', 'route', 'pttts','days','times'));
     }
 
     public function findRoute(Request $request)
     {
         // echo('troi');
+        // $data = $request->all();
+        // if ($data['action']) {
+        //     $output = '';
+        //     if ($data['action'] == "route") {
+        //         $times = tripModel::join('c_ng_g_x', 'c_ng_g_x.idchuyen', '=', 'chuyen.idchuyen')
+        //             ->join('gio', 'gio.idgio', '=', 'c_ng_g_x.idgio')
+        //             ->where('idtuyen', $data['ma'])->get();
+        //         $output .= '<option value ="">--- Chọn ---</option>';
+        //         foreach ($times as $key => $time) {
+        //             $output .= '<option value ="' . $time->idgio . '">' . $time->tg_xuatben . '</option>';
+        //         }
+        //     } else if ($data['action'] == "time") {
+        //         // echo (123); 
+        //         $days = timeModel::join('c_ng_g_x', 'gio.idgio', '=', 'c_ng_g_x.idgio')
+        //             ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
+        //             ->where('gio.idgio', $data['ma'])->get();
+        //         $output .= '<option value ="">--- Chọn ---</option>';
+        //         foreach ($days as $key => $day) {
+        //             $output .= '<option value ="' . $day->idngay . '">' . $day->ngaychay . '</option>';
+        //         }
+        //     }
+        //     echo ($output);
+        // }
         $data = $request->all();
         if ($data['action']) {
             $output = '';
             if ($data['action'] == "route") {
                 $times = tripModel::join('c_ng_g_x', 'c_ng_g_x.idchuyen', '=', 'chuyen.idchuyen')
                     ->join('gio', 'gio.idgio', '=', 'c_ng_g_x.idgio')
-                    ->where('idtuyen', $data['ma'])->get();
+                    ->where('idtuyen', $data['ma'])->distinct(['gio.idgio', 'tg_xuatben'])->get(['gio.idgio', 'tg_xuatben']);
                 $output .= '<option value ="">--- Chọn ---</option>';
                 foreach ($times as $key => $time) {
                     $output .= '<option value ="' . $time->idgio . '">' . $time->tg_xuatben . '</option>';
                 }
             } else if ($data['action'] == "time") {
-                // echo (123); 
                 $days = timeModel::join('c_ng_g_x', 'gio.idgio', '=', 'c_ng_g_x.idgio')
                     ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
-                    ->where('gio.idgio', $data['ma'])->get();
+                    ->where('gio.idgio', $data['ma'])->distinct('ngaychay.idngay', 'ngaychay.ngaychay')->get(['ngaychay.idngay', 'ngaychay.ngaychay']);
                 $output .= '<option value ="">--- Chọn ---</option>';
                 foreach ($days as $key => $day) {
                     $output .= '<option value ="' . $day->idngay . '">' . $day->ngaychay . '</option>';
@@ -308,25 +511,29 @@ class ticketController extends Controller
     }
     public function seat(Request $request)
     {
+        
         $data = $request->all();
-        if ($data['action']) {
-            $output = '';
-            if ($data['action']) {
-                $check = tripDayTimeBusModel::join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')->find($data['ma']);
-                // $check = busModel::find();
+        // if ($data['action']) {
+        $output = '';
+        // if ($data['action']) {
+        $c_ng_g_x = tripDayTimeBusModel::join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')->find($data['id_c_ng_g_x']);
+        // $check = busModel::find();
 
-                // echo ($check['idxe']);
-                $buss = busModel::join('ghe', 'xe.idxe', '=', 'ghe.idxe')->where('ghe.idxe', $check['idxe'])->get();
-                // foreach ($check as $key => $bus) {
-                //     echo ($bus['idxe']);
-                // }
-                if ($check['idlx'] == 1) {
-                    $output .= '<div class="col-6"><div class="row">';
-                    foreach ($buss as $key => $bus) {
-                        if ($key < 10) {
-
-                            if ($bus['datcho'] == 1) {
-                                $output .= '
+        $buss = busModel::join('ghe', 'xe.idxe', '=', 'ghe.idxe')->where('ghe.idxe', $c_ng_g_x['idxe'])->get();
+        if ($c_ng_g_x['idlx'] == 1) {
+            $output .= '<div class="col-6"><div class="row">';
+            foreach ($buss as $key => $bus) {
+                if ($key < 10) {
+                    // $isExist = ticketModel::join('datcho', 'datcho.iddc', '=', 'chitietdatcho.iddc')->where('idghe', $bus['idghe'])->where('id_c_ng_g_x', $data['id_c_ng_g_x'])->exists();
+                    $isExist = ticketModel::join('datcho', 'datcho.iddc', '=', 'chitietdatcho.iddc')
+                        ->where('idghe', $bus['idghe'])
+                        ->where('id_c_ng_g_x', $data['id_c_ng_g_x'])
+                        ->where('idttv', '!=', 0)
+                        ->where('idttv', '!=', 3)
+                        // ->where('idttv', '!=', 4)
+                        ->exists();
+                    if ($isExist) {
+                        $output .= '
                                 <div class=" bg-danger" 
                                 style="border-radius: 15px 15px 0px 0px;
                                     border: 2px solid black;
@@ -338,8 +545,8 @@ class ticketController extends Controller
                                     height: 50px;
                                     flex: 0 0 auto;"><b style=" border-bottom: 2px solid #000; padding-bottom:3px;width: 100%">' . $bus['maghe'] . '</b></div>
                                         ';
-                            } else {
-                                $output .= '
+                    } else {
+                        $output .= '
                             <div class=" bg-light" 
                             style="border-radius: 15px 15px 0px 0px;
                                 border: 2px solid black;
@@ -351,21 +558,29 @@ class ticketController extends Controller
                                 height: 50px;
                                 flex: 0 0 auto;"><b style=" border-bottom: 2px solid #000; padding-bottom:3px;width: 100%">' . $bus['maghe'] . '</b></div>
                                     ';
-                            }
-                        }
-
-
-
-                        // $output .= '<option value ="' . $district->idqh . '">' . $district->name_district . '</option>';
                     }
-                    $output .= ' </div> </div>';
+                }
 
-                    $output .= '<div class="col-6"><div class="row">';
-                    foreach ($buss as $key => $bus) {
-                        // echo($key);
-                        if ($key >= 10) {
-                            if ($bus['datcho'] == 1) {
-                                $output .= '
+
+
+                // $output .= '<option value ="' . $district->idqh . '">' . $district->name_district . '</option>';
+            }
+            $output .= ' </div> </div>';
+
+            $output .= '<div class="col-6"><div class="row">';
+            foreach ($buss as $key => $bus) {
+                // echo($key);
+                if ($key >= 10) {
+                    // $isExist = ticketModel::join('datcho', 'datcho.iddc', '=', 'chitietdatcho.iddc')->where('idghe', $bus['idghe'])->where('id_c_ng_g_x', $data['id_c_ng_g_x'])->exists();
+                    $isExist = ticketModel::join('datcho', 'datcho.iddc', '=', 'chitietdatcho.iddc')
+                        ->where('idghe', $bus['idghe'])
+                        ->where('id_c_ng_g_x', $data['id_c_ng_g_x'])
+                        ->where('idttv', '!=', 0)
+                        ->where('idttv', '!=', 3)
+                        // ->where('idttv', '!=', 4)
+                        ->exists();
+                    if ($isExist) {
+                        $output .= '
                                 <div class=" bg-danger " 
                                 style="border-radius: 15px 15px 0px 0px;
                                     border: 2px solid black;
@@ -377,8 +592,8 @@ class ticketController extends Controller
                                     height: 50px;
                                     flex: 0 0 auto;"><b style=" border-bottom: 2px solid #000; padding-bottom:3px;width: 100%">' . $bus['maghe'] . '</b></div>
                                         ';
-                            } else {
-                                $output .= '
+                    } else {
+                        $output .= '
                             <div class=" bg-light " 
                             style="border-radius: 15px 15px 0px 0px;
                                 border: 2px solid black;
@@ -390,31 +605,39 @@ class ticketController extends Controller
                                 height: 50px;
                                 flex: 0 0 auto;"><b style=" border-bottom: 2px solid #000; padding-bottom:3px;width: 100%">' . $bus['maghe'] . '</b></div>
                                     ';
-                            }
-                        }
-
-                        // $output .= '<option value ="' . $district->idqh . '">' . $district->name_district . '</option>';
                     }
-                    $output .= ' </div> </div>';
                 }
 
-                // ghe ngoi
-                else {
-                    foreach ($buss as $key => $bus) {
-                        if ($bus['datcho'] == 1) {
-                            if (($key % 2) == 1) {
-                                $output .= '
+                // $output .= '<option value ="' . $district->idqh . '">' . $district->name_district . '</option>';
+            }
+            $output .= ' </div> </div>';
+        }
+
+        // giuong ngoi
+        else {
+            foreach ($buss as $key => $bus) {
+                // $isExist = ticketModel::join('datcho', 'datcho.iddc', '=', 'chitietdatcho.iddc')->where('idghe', $bus['idghe'])->where('id_c_ng_g_x', $data['id_c_ng_g_x'])->exists();
+                $isExist = ticketModel::join('datcho', 'datcho.iddc', '=', 'chitietdatcho.iddc')
+                    ->where('idghe', $bus['idghe'])
+                    ->where('id_c_ng_g_x', $data['id_c_ng_g_x'])
+                    ->where('idttv', '!=', 0)
+                    ->where('idttv', '!=', 3)
+                    // ->where('idttv', '!=', 4)
+                    ->exists();
+                if ($isExist) {
+                    if (($key % 2) == 1) {
+                        $output .= '
                                     <div class=" bg-danger " 
                                     style="border-radius: 15px 15px 0px 0px;
                                         border: 2px solid black;
                                         text-align: center;
                                         padding-top:10px;
                                         margin-right:25px;
-                                        width: 20%;
+                                        width: 18%;
                                         height: 50px;
                                         flex: 0 0 auto;"><b style=" border-bottom: 2px solid #000; padding-bottom:3px;width: 100%">' . $bus['maghe'] . '</b></div>';
-                            } else {
-                                $output .= '
+                    } else {
+                        $output .= '
                                     <div class=" bg-danger " 
                                     style="border-radius: 15px 15px 0px 0px;
                                         border: 2px solid black;
@@ -422,25 +645,25 @@ class ticketController extends Controller
                                         padding-top:10px;
                                         margin-bottom:2px;
                                         margin-right:2px;
-                                        width: 20%;
+                                        width: 18%;
                                         height: 50px;
                                         flex: 0 0 auto;"><b style=" border-bottom: 2px solid #000; padding-bottom:3px;width: 100%">' . $bus['maghe'] . '</b></div>';
-                            }
-                        } else if ($bus['datcho'] == 0) {
-                            if (($key % 2) == 1) {
-                                $output .= '
+                    }
+                } else {
+                    if (($key % 2) == 1) {
+                        $output .= '
                                         <div class="bg-light " 
                                         style="border-radius: 15px 15px 0px 0px;
                                             border: 2px solid black;
                                             text-align: center;
                                             padding-top:10px;
                                             margin-right:25px;
-                                            width: 20%;
+                                            width: 18%;
                                             height: 50px;
                                             flex: 0 0 auto;"  ><b style=" border-bottom: 2px solid #000; padding-bottom:3px;width: 100%">' . $bus['maghe'] . '</b></div> 
                                     ';
-                            } else {
-                                $output .= '
+                    } else {
+                        $output .= '
                                         <div class=" bg-light " 
                                         style="border-radius: 15px 15px 0px 0px;
                                                 border: 2px solid black;
@@ -448,53 +671,192 @@ class ticketController extends Controller
                                                 padding-top:10px;
                                                 margin-bottom:2px;
                                                 margin-right:2px;
-                                                width: 20%;
+                                                width: 18%;
                                                 height: 50px;
                                                 flex: 0 0 auto;
                                                 "  ><b style=" border-bottom: 2px solid #000; padding-bottom:3px;width: 100%">' . $bus['maghe'] . '</b></div> 
                                         ';
-                            }
-                        }
+                    }
+                }
 
-                        // $output .= '<option value ="' . $district->idqh . '">' . $district->name_district . '</option>';
+                // $output .= '<option value ="' . $district->idqh . '">' . $district->name_district . '</option>';
+            }
+        }
+        echo ($output);
+        // }
+    }
+    public function check_seat(Request $request)
+    {
+        $data = $request->all();
+
+        $output = '';
+
+        $c_ng_g_x = tripDayTimeBusModel::join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')->find($data['id_c_ng_g_x']);
+
+        $buss = busModel::join('ghe', 'xe.idxe', '=', 'ghe.idxe')->where('ghe.idxe', $c_ng_g_x['idxe'])->get();
+
+        if ($c_ng_g_x['idlx'] == 1) {
+            foreach ($buss as $key => $bus) {
+                if ($key < 10) {
+                    // $isDel = orderModel::where('idttv',)
+                    $isExist = ticketModel::join('datcho', 'datcho.iddc', '=', 'chitietdatcho.iddc')
+                        ->where('idghe', $bus['idghe'])
+                        ->where('id_c_ng_g_x', $data['id_c_ng_g_x'])
+                        ->where('idttv', '!=', 0)
+                        ->where('idttv', '!=', 3)
+                        // ->where('idttv', '!=', 4)
+                        ->exists();
+
+                    if ($isExist) {
+                        $output .= '
+                            <input type="checkbox" name="idghes[]"  style="width: 15px;height: 15px;" value="' . $bus['idghe'] . '" disabled/> ' . $bus['maghe'] . '&nbsp; &nbsp;&nbsp;';
+                        if ($key + 1 < 10) {
+                            $output .= '&nbsp;&nbsp;';
+                        }
+                        if (($key + 1) % 4 == 0) {
+                            $output .= '</br>';
+                        }
+                    } else {
+                        $output .= '
+                            <input type="checkbox" name="idghes[]" style="width: 15px;height: 15px;" value="' . $bus['idghe'] . '"/> ' . $bus['maghe'] . '&nbsp; &nbsp;&nbsp;';
+                        if ($key + 1 < 10) {
+                            $output .= '&nbsp;&nbsp;';
+                        }
+                        if (($key + 1) % 4 == 0) {
+                            $output .= '</br>';
+                        }
                     }
                 }
             }
-            echo ($output);
+            $output .= '</br>';
+
+            foreach ($buss as $key => $bus) {
+                // echo($key);
+                if ($key >= 10) {
+                    $isExist = ticketModel::join('datcho', 'datcho.iddc', '=', 'chitietdatcho.iddc')
+                        ->where('idghe', $bus['idghe'])
+                        ->where('id_c_ng_g_x', $data['id_c_ng_g_x'])
+                        ->where('idttv', '!=', 0)
+                        ->where('idttv', '!=', 3)
+                        // ->where('idttv', '!=', 4)
+                        ->exists();
+                    if ($isExist) {
+                        $output .= '
+                            <input type="checkbox" name="idghes[]"  style="width: 15px;height: 15px;" value="' . $bus['idghe'] . '" disabled/> ' . $bus['maghe'] . '&nbsp;&nbsp;&nbsp; ';
+                        if ($key - 10 + 1 < 10) {
+                            $output .= '&nbsp;&nbsp;&nbsp;';
+                        }
+                        if (($key + 1) % 4 == 0) {
+                            $output .= '</br>';
+                        }
+                    } else {
+                        $output .= '
+                            <input type="checkbox" name="idghes[]" style="width: 15px;height: 15px;" value="' . $bus['idghe'] . '"/> ' . $bus['maghe'] . '&nbsp;&nbsp;&nbsp;';
+                        if ($key - 10 + 1 < 10) {
+                            $output .= '&nbsp;&nbsp;&nbsp;';
+                        }
+                        if (($key + 1) % 4 == 0) {
+                            $output .= '</br>';
+                        }
+                    }
+                }
+
+                // $output .= '<option value ="' . $district->idqh . '">' . $district->name_district . '</option>';
+            }
         }
+
+        // giuong ngoi
+        else {
+            foreach ($buss as $key => $bus) {
+                $isExist = ticketModel::join('datcho', 'datcho.iddc', '=', 'chitietdatcho.iddc')
+                    ->where('idghe', $bus['idghe'])
+                    ->where('id_c_ng_g_x', $data['id_c_ng_g_x'])
+                    ->where('idttv', '!=', 0)
+                    ->where('idttv', '!=', 3)
+                    // ->where('del', '!=', 1)
+                    ->exists();
+
+                if ($isExist) {
+                    $output .= '
+                        <input type="checkbox" name="idghes[]"  style="width: 15px;height: 15px;" value="' . $bus['idghe'] . '" disabled/> ' . $bus['maghe'] . '&nbsp; &nbsp;&nbsp;';
+                    if ($key + 1 < 10) {
+                        $output .= '&nbsp;&nbsp;';
+                    }
+                    if (($key + 1) % 4 == 0) {
+                        $output .= '</br>';
+                    }
+                } else {
+                    $output .= '
+                        <input type="checkbox" name="idghes[]" style="width: 15px;height: 15px;" value="' . $bus['idghe'] . '"/> ' . $bus['maghe'] . '&nbsp; &nbsp;&nbsp;';
+                    if ($key + 1 < 10) {
+                        $output .= '&nbsp;&nbsp;';
+                    }
+                    if (($key + 1) % 4 == 0) {
+                        $output .= '</br>';
+                    }
+                }
+
+                // $output .= '<option value ="' . $district->idqh . '">' . $district->name_district . '</option>';
+            }
+        }
+        // }
+        echo ($output);
+        // echo ("tientien0");
+        // }
     }
     public function booking(bookingRequest $request)
     {
         $data = $request->all();
-        // dd($data);
+        // // dd($data);
 
-        $check = chairModel::join('c_ng_g_x', 'ghe.idxe', '=', 'c_ng_g_x.idxe')->where('id_c_ng_g_x', $data['id_c_ng_g_x'])->where('maghe', $data['maghe'])->exists();
-        // $chair =  chairModel::where('idghe', $buss['idghe'])->get();
+        // $check = chairModel::join('c_ng_g_x', 'ghe.idxe', '=', 'c_ng_g_x.idxe')->where('id_c_ng_g_x', $data['id_c_ng_g_x'])->where('maghe', $data['maghe'])->exists();
+        // // $chair =  chairModel::where('idghe', $buss['idghe'])->get();
 
-        if (!$check) {
-            $error = "Vui lòng chọn chỗ ngồi phù hợp với mã ghế theo sơ đồ ghế bên cạnh!";
-            return redirect()->back()->with('error', $error);
+        // if (!$check) {
+        //     $error = "Vui lòng chọn chỗ ngồi phù hợp với mã ghế theo sơ đồ ghế bên cạnh!";
+        //     return redirect()->back()->with('error', $error);
+        // }
+        // // dd($check);
+        // $buss = chairModel::join('c_ng_g_x', 'ghe.idxe', '=', 'c_ng_g_x.idxe')->where('id_c_ng_g_x', $data['id_c_ng_g_x'])->where('maghe', $data['maghe'])->first();
+
+        // if ($buss['datcho'] == 1) {
+        //     $error = "Vui lòng chọn chỗ ngồi tình trạng \"trống\"!";
+        //     return redirect()->back()->with('error', $error);
+        // }
+        $success = "Đặt vé thành công!";
+        // $data['idghe'] = $buss['idghe'];
+        // $data['TTV'] = 1;
+        // $data['PTTT'] = 0;
+
+        // // dd($data);
+
+        // ticketModel::create($data);
+        // chairModel::find($buss['idghe'])->update([
+        //     'datcho' => 1,
+        // ]);
+        // $data['idghe'] = $buss['idghe'];
+        // $data['idttv'] = 1;
+        // orderModel::create($data);
+        // $iddc = orderModel::get()->last();
+        // $data['iddc'] = $iddc->iddc;
+        // // dd($data);
+        // ticketModel::create($data);
+        $data['idttv'] = 1;
+        $money = 0;
+        foreach ($data['idghes'] as $checkbox) {
+            $money++;
         }
-        // dd($check);
-        $buss = chairModel::join('c_ng_g_x', 'ghe.idxe', '=', 'c_ng_g_x.idxe')->where('id_c_ng_g_x', $data['id_c_ng_g_x'])->where('maghe', $data['maghe'])->first();
-
-        if ($buss['datcho'] == 1) {
-            $error = "Vui lòng chọn chỗ ngồi tình trạng \"trống\"!";
-            return redirect()->back()->with('error', $error);
-        }
-        $success = "Đặt thành công!";
-        $data['idghe'] = $buss['idghe'];
-        $data['TTV'] = 1;
-        $data['PTTT'] = 0;
-        $data['rate'] = 0;
-
+        $data['tongtien'] = $money * $data['giave'];
+        $data['del'] = 0;
+        orderModel::create($data);
+        $iddc = orderModel::get()->last();
+        $data['iddc'] = $iddc->iddc;
         // dd($data);
+        foreach ($data['idghes'] as $checkbox) {
+            $data['idghe'] = $checkbox;
+            ticketModel::create($data);
+        }
 
-        ticketModel::create($data);
-        chairModel::find($buss['idghe'])->update([
-            'datcho' => 1,
-        ]);
         return redirect()->back()->with('success', $success);
-        // return redirect('admin/ticket');
     }
 }

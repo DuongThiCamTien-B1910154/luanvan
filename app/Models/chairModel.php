@@ -14,7 +14,6 @@ class chairModel extends Model
     protected $fillable = [
         'idghe',
         'maghe',
-        'datcho',
         'idxe',
     ];
 }

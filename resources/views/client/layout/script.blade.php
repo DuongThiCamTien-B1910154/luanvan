@@ -41,32 +41,48 @@
         // load ajax after 5s
         setInterval(function() {
             var privateTeam = $('.bus').val();
+            // console.log(privateTeam)
             hide_show(privateTeam);
         }, 5000);
 
         // show seat
         $('.bus').on('change', function() {
             var action = $(this).attr('id');
-            var ma = $(this).val();
+            var id_c_ng_g_x = $(this).val();
             var _token = $('input[name="_token"]').val();
             var result = '';
-            console.log(action)
+            // console.log(id_c_ng_g_x)
             if (action != '') {
                 $.ajax({
                     method: "POST",
                     url: '{{url("/client/ticket/seat")}}',
                     data: {
                         action: action,
-                        ma: ma,
+                        id_c_ng_g_x: id_c_ng_g_x,
                         _token: _token,
                     },
                     success: function(data) {
                         $('.seatBus').html(data);
-                        // console.log(('#' + result));
+                        // console.log(data);
+                    }
+                });
+                // check_seat 
+                $.ajax({
+                    method: "POST",
+                    url: '{{url("/client/ticket/check_seat")}}',
+                    data: {
+                        action: action,
+                        id_c_ng_g_x: id_c_ng_g_x,
+                        _token: _token,
+                    },
+                    success: function(data) {
+                        $('.check_seat').html(data);
+                        // console.log(data);   
                     }
                 });
             }
         });
+
         // show seatOld
         var privateTeam = $('.bus').val();
         hide_show(privateTeam);
@@ -104,26 +120,24 @@
         $(".rating_bus").click(function(e) {
             event.preventDefault()
             var idkh = $(".idkh").val()
-            var idghe = $(".idghe").val()
+            var iddc = $(".iddc").val()
             var content = $(".content").val();
             var number = $(".number_rating").val()
             var _token = $('input[name="_token"]').val();
-            console.log(number)
             if (!number) {
                 alert("Vui lòng chọn đánh giá !");
             } else(
                 $.ajax({
-                    method: "POST",
-                    url: '{{url("/client/ticket/rating")}}',
+                    method: "post",
+                    url: '{{url("/client/history/rating")}}',
                     data: {
-                        idghe: idghe,
+                        iddc: iddc,
                         idkh: idkh,
                         noidungbl: content,
                         rating: number,
                         _token: _token,
                     },
                     success: function(data) {
-                        console.log('asjfdhuidf')
                         console.log(data)
                         if (data == "err") {
                             alert("Bạn đã đánh giá trước đó!");
@@ -133,20 +147,16 @@
                             $('.modal-backdrop').remove()
                             $('body').removeClass('modal-open');
                         }
-
-                        // $('body').removeAttr("style");
-                        // $('.idkh').click()
-
                     }
                 })
             )
         })
 
         // get id_rating 
-        $('.id_rating').on('click' , function() {
-            var idghe = $(this).attr('id')
+        $('.id_rating').on('click', function() {
+            var iddc = $(this).attr('id')
             var number = 5
-            $(".idghe").val(idghe)
+            $(".iddc").val(iddc)
             $(".rating_number").val()
             listRatingText = {
                 1: 'Không thích',
@@ -158,13 +168,13 @@
             let $this = $(this);
             let listStart = $(".list_start .fa");
             $.each(listStart, function(key, value) {
-                if (key + 1 <=number) {
+                if (key + 1 <= number) {
                     $(this).addClass('rating_active')
                 }
             })
             $(".list_text").text('').text(listRatingText[5]).show()
         })
-       
+
 
         // review rating
         $('.id_rating_view').on('click', function() {
@@ -193,7 +203,7 @@
     function hide_show(privateTeam) {
         if (privateTeam != 0) {
             var action = $(this).attr('id');
-            var ma = privateTeam;
+            var id_c_ng_g_x = privateTeam;
             var _token = $('input[name="_token"]').val();
             var result = '';
             if (action != '') {
@@ -202,13 +212,27 @@
                     url: '{{url("/client/ticket/seat")}}',
                     data: {
                         action: action,
-                        ma: ma,
+                        id_c_ng_g_x: id_c_ng_g_x,
                         _token: _token,
                     },
                     success: function(data) {
                         $('.seatBus').html(data);
                     }
                 });
+                // check_seat 
+                // $.ajax({
+                //     method: "POST",
+                //     url: '{{url("/client/ticket/check_seat")}}',
+                //     data: {
+                //         action: action,
+                //         id_c_ng_g_x: id_c_ng_g_x,
+                //         _token: _token,
+                //     },
+                //     success: function(data) {
+                //         $('.check_seat').html(data);
+                //         // console.log(data);   
+                //     }
+                // });
             }
         }
     }

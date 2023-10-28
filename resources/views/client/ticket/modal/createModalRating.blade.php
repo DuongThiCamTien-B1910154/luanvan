@@ -1,4 +1,4 @@
-<form action="#" method="post" enctype="multipart/form-data">
+<form action="#" method="POST" enctype="multipart/form-data">
     @csrf
     <div class="modal fade text-left" id="ModalCreateRating" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -24,7 +24,7 @@
                             <span class="list_text"></span>
                     </span>
                     <input type="hidden" value="" class="number_rating">
-                    <input type="hidden" value="" class="idghe">
+                    <input type="hidden" value="" class="iddc">
                     <div class="mt-3">Nhận xét:</div>
                     <textarea name="content" class="form-control content" id="content" id="" cols="30" rows="4"></textarea>
                     <div class="col-xs-12 col-sm-12 col-md-12 mt-4">

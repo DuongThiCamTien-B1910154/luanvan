@@ -34,6 +34,13 @@
                         <form action="" enctype=" multipart/form-data" method="POST">
                             @csrf
                             <div class="form-group">
+                                <label for="">Ngày chạy:</label>
+                                <input type="date" class="form-control dateRunEdit" id="dateRunEdit" name="ngaychay" value="{{$data->ngaychay}}">
+                                @error('ngaychay')
+                                <span style="color: red;">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            <div class="form-group">
                                 <label for="diemKH">Chạy tuyến: </label>
                                 <select name="idtuyen" id="">
                                     @foreach ($routes as $route)
@@ -48,18 +55,22 @@
                                     @endforeach
                                 </select>
                             </div>
+                            @foreach ($buss as $bus)
+                                @if($bus->idxe == $data->idxe)
+                                <input type="hidden" value="{{$bus->idxe}}" class="idxeOld" id="idxeOld"></input>
+                                @endif
+                            @endforeach
+                            <input type="hidden" class="form-control dateOld" id="dateOld" name="ngaychay" value="{{$data->ngaychay}}">
                             <div class="form-group">
                                 <label for="idxe">Xe chạy: &nbsp;&nbsp; </label>
-                                <select name="idxe" id="">
+                                <select name="idxe" id="idxe">
                                     @foreach ($buss as $bus)
                                     @if($bus->idxe == $data->idxe)
                                     <option value="{{$bus->idxe}}">{{$bus->bienso}}-{{$bus->tenloai}}</option>
                                     @endif
                                     @endforeach
-                                    @foreach ($buss as $bus)
-                                    @if($bus->idxe != $data->idxe)
-                                    <option value="{{$bus->idxe}}">{{$bus->bienso}}-{{$bus->tenloai}}</option>
-                                    @endif
+                                    @foreach ($busRunEdits as $busRunEdit)
+                                    <option value="{{$busRunEdit->idxe}}">{{$busRunEdit->bienso}}-{{$busRunEdit->tenloai}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -70,13 +81,7 @@
                                 <span style="color: red;">{{ $message }}</span>
                                 @enderror
                             </div>
-                            <div class="form-group">
-                                <label for="">Ngày chạy:</label>
-                                <input type="date" class="form-control" id="" name="ngaychay" value="{{$data->ngaychay}}">
-                                @error('ngaychay')
-                                <span style="color: red;">{{ $message }}</span>
-                                @enderror
-                            </div>
+                            
                             <div class="form-group">
                                 <label for="">Tài xế: &nbsp;&nbsp; </label>
                                 <select name="idadmin" id="">
@@ -89,14 +94,12 @@
                                     @endforeach
                                     @endif
                                     @endforeach
-                                    @foreach ($admins as $admin)
-                                    @if($admin->idcv == 4)
-                                    @foreach ($users as $user)
-                                    @if ($user->idnd == $admin->idnd && $admin->idadmin != $data->idadmin)
-                                    <option value="{{$admin->idadmin}}">{{$user ->tennd}}</option>
-                                    @endif
-                                    @endforeach
-                                    @endif
+                                    @foreach ($drivers as $driver)
+                                        @foreach ($users as $user)
+                                            @if ($user->idnd == $driver->idnd && $driver->idadmin != $data->idadmin)
+                                            <option value="{{$driver->idadmin}}">{{$user ->tennd}}</option>
+                                            @endif
+                                        @endforeach
                                     @endforeach
                                 </select>
                                 @error('idadmin')

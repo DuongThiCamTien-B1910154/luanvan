@@ -5,6 +5,7 @@ namespace App\Http\Controllers\client\momo;
 use App\Http\Controllers\Controller;
 use App\Models\chairModel;
 use App\Models\clientModel;
+use App\Models\orderModel;
 use App\Models\ticketModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -18,39 +19,6 @@ class momoController extends Controller
     public function momoPay()
     {
         $data_ticket = Session::get('data');
-
-        $buss = chairModel::join('c_ng_g_x', 'ghe.idxe', '=', 'c_ng_g_x.idxe')->where('id_c_ng_g_x', $data_ticket['id_c_ng_g_x'])->where('maghe', $data_ticket['maghe'])->first();
-        if (!auth('client')->user()) {
-            $success = "Chúng tôi sẽ gọi đến số điện thoại của quý khách để xác nhận!";
-            $data_ticket['idghe'] = $buss['idghe'];
-            $data_ticket['TTV'] = 0;
-            $data_ticket['rate'] = 0;
-
-            ticketModel::create($data_ticket);
-            chairModel::find($buss['idghe'])->update([
-                'datcho' => 1,
-            ]);
-        } else {
-            $user = clientModel::join('nguoidung', 'nguoidung.idnd', '=', 'khachhang.idnd')
-                ->where('idkh', auth('client')->user()->idkh)->first();
-            $name = $user->tennd;
-            Mail::send('client.email.sendMail', compact('name'), function ($email) use ($name) {
-                $email->subject('BUSLINE');
-                $email->to(auth('client')->user()->email, $name);
-            });
-            $data_ticket['idghe'] = $buss['idghe'];
-            $data_ticket['TTV'] = 0;
-            $data_ticket['rate'] = 0;
-
-            $data_ticket['idkh'] = auth('client')->user()->idkh;
-            ticketModel::create($data_ticket);
-            chairModel::find($buss['idghe'])->update([
-                'datcho' => 1,
-            ]);
-        }
-
-
-
         $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
 
 
@@ -66,7 +34,6 @@ class momoController extends Controller
         } else {
             $redirectUrl = "http://127.0.0.1:8000/client/history/0";
             $ipnUrl = "http://127.0.0.1:8000/client/history/0";
-
         }
         $extraData = "";
 
@@ -107,6 +74,100 @@ class momoController extends Controller
         // dd($data['id_c_ng_g_x']);
 
         // return redirect('client/history/0');
+
+
+        $buss = chairModel::join('c_ng_g_x', 'ghe.idxe', '=', 'c_ng_g_x.idxe')->where('id_c_ng_g_x', $data_ticket['id_c_ng_g_x'])->where('maghe', $data_ticket['maghe'])->first();
+        if (!auth('client')->user()) {
+            // $success = "Chúng tôi sẽ gọi đến số điện thoại của quý khách để xác nhận!";
+            // $data_ticket['idghe'] = $buss['idghe'];
+            // $data_ticket['TTV'] = 0;
+            // $data_ticket['rate'] = 0;
+
+            // ticketModel::create($data_ticket);
+            // chairModel::find($buss['idghe'])->update([
+            //     'datcho' => 1,
+            // ]);
+            // $data_ticket['TTV'] = 0;
+            // orderModel::create($data_ticket);
+            // $iddc = orderModel::get()->last();
+            // $data_ticket['iddc'] = $iddc->iddc;
+            // foreach ($data_ticket['idghes'] as $checkbox) {
+            //     $data_ticket['idghe'] = $checkbox;
+            //     ticketModel::create($data_ticket);
+            // }
+            $data_ticket['idttv'] = 1;
+            $money = 0;
+            foreach ($data_ticket['idghes'] as $checkbox) {
+                $money++;
+            }
+            $data_ticket['tongtien'] = $money * $data_ticket['giave'];
+            $data_ticket['del'] = 0;
+            orderModel::create($data_ticket);
+            $iddc = orderModel::get()->last();
+            $data_ticket['iddc'] = $iddc->iddc;
+            // dd($data);
+            foreach ($data_ticket['idghes'] as $checkbox) {
+                $data_ticket['idghe'] = $checkbox;
+                ticketModel::create($data_ticket);
+            }
+            // $data_ticket['idghe'] = $buss['idghe'];
+            // $data_ticket['TTV'] = 0;
+            // orderModel::create($data_ticket);
+            // $iddc = orderModel::get()->last();
+            // $data_ticket['iddc'] = $iddc->iddc;
+            // ticketModel::create($data_ticket);
+        } else {
+            // $user = clientModel::join('nguoidung', 'nguoidung.idnd', '=', 'khachhang.idnd')
+            //     ->where('idkh', auth('client')->user()->idkh)->first();
+            // $name = $user->tennd;
+            // Mail::send('client.email.sendMail', compact('name'), function ($email) use ($name) {
+            //     $email->subject('BUSLINE');
+            //     $email->to(auth('client')->user()->email, $name);
+            // });
+            // $data_ticket['idghe'] = $buss['idghe'];
+            // $data_ticket['TTV'] = 0;
+            // $data_ticket['rate'] = 0;
+
+            // $data_ticket['idkh'] = auth('client')->user()->idkh;
+            // ticketModel::create($data_ticket);
+            // chairModel::find($buss['idghe'])->update([
+            //     'datcho' => 1,
+            // ]);
+            $user = clientModel::join('nguoidung', 'nguoidung.idnd', '=', 'khachhang.idnd')
+                ->where('idkh', auth('client')->user()->idkh)->first();
+            $name = $user->tennd;
+            // dd(auth('client')->user()->email);
+            \Illuminate\Support\Facades\Mail::send('client.email.sendMail', compact('name'), function ($email) use ($name) {
+                $email->subject('BUSLINE');
+                $email->to(auth('client')->user()->email, $name);
+            });
+
+            // $data_ticket['idkh'] = auth('client')->user()->idkh;
+            // $data_ticket['TTV'] = 0;
+            // orderModel::create($data_ticket);
+            // $iddc = orderModel::get()->last();
+            // $data_ticket['iddc'] = $iddc->iddc;
+            // foreach ($data_ticket['idghes'] as $checkbox) {
+            //     $data_ticket['idghe'] = $checkbox;
+            //     ticketModel::create($data_ticket);
+            // }
+            $data_ticket['idkh'] = auth('client')->user()->idkh;
+            $data_ticket['idttv'] = 1;
+            $money = 0;
+            foreach ($data_ticket['idghes'] as $checkbox) {
+                $money++;
+            }
+            $data_ticket['tongtien'] = $money * $data_ticket['giave'];
+            $data_ticket['del'] = 0;
+            orderModel::create($data_ticket);
+            $iddc = orderModel::get()->last();
+            $data_ticket['iddc'] = $iddc->iddc;
+            // dd($data);
+            foreach ($data_ticket['idghes'] as $checkbox) {
+                $data_ticket['idghe'] = $checkbox;
+                ticketModel::create($data_ticket);
+            }
+        }
 
         return redirect()->to($jsonResult['payUrl']);
         //Just a example, please check more in there

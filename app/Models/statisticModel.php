@@ -5,16 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ratingModel extends Model
+class statisticModel extends Model
 {
     use HasFactory;
+    protected $table = "thongke";
     public $timestamps = false;
-    protected $table = "nhanxet";
-    protected $primaryKey = 'idnx';
+    protected $primaryKey = 'idtk';
     protected $fillable = [
-        'idnx',
-        'iddc',
-        'noidungbl',
-        'rating',
+        'idtk',
+        'ngayxechay',
+        'tongtien',
+        'soluongve',
     ];
 }

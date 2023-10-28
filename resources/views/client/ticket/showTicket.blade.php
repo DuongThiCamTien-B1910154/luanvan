@@ -84,7 +84,6 @@
                         <label for="idngay"><span class="text-danger font-weight-bold">(*3)</span> Chọn ngày chạy</label><br>
                         <select name="idngay" id="day" class="findRoute">
                             <option value="">--- Chọn ---</option>
-
                         </select>
                     </div>
                     <button type="button" class="btn btn-primary " onclick="document.getElementById('form-id').submit();">Tìm xe</button>

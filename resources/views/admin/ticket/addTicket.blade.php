@@ -28,7 +28,7 @@
             <!-- content-wrapper -->
 
 
-            <div class="container-fluid row mt-2 " style="">
+            <div class="container-fluid row mt-2 "  >
                 <div class="row bg-white">
                     <!-- day la noi dung -->
 
@@ -49,7 +49,7 @@
                             <label for="idtuyen"><span class="text-danger font-weight-bold ">(*1)</span> Chọn tuyến xe:</label>
                             <select name="idtuyen" id="route" class="findRoute">
                                 <option value="">--- Chọn ---</option>
-                                @foreach ($routes as $route)
+                                @foreach ($routes as $route)    
                                 <option value="{{$route->idtuyen}}">{{$route->tentuyen}}</option>
                                 @endforeach
 

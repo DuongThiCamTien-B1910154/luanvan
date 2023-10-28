@@ -28,7 +28,7 @@ class ticketClientRequest extends FormRequest
             'sdt' => 'numeric|required|digits:10',
             'email' => 'required|unique:admin',
             'id_c_ng_x' => 'required',
-            'seat' => 'required',
+            'idghes[]' => 'required',
         ];
     }
     public function messages()
@@ -41,7 +41,7 @@ class ticketClientRequest extends FormRequest
             'sdt.digits' => '* Số điện thoại phải có độ dài :digits',
             'sdt.numeric' => '* Số điện thoại phải là số!',
             'id_c_ng_x.required' => '* Xe không được để trống!',
-            'seat.required' => '* Chỗ ngồi không được để trống!',
+            'idghes[].required' => '* Chỗ ngồi không được để trống!',
         ];
     }
 }

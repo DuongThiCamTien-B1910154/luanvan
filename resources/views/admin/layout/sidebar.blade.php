@@ -53,16 +53,23 @@
             </a>
         </li>
         @else
-        <!-- <li class="nav-item">
-            <a class="nav-link" href="{{asset('admin')}}">
-                <span class="menu-title">Trang chủ</span>
-                <i class="mdi mdi-home menu-icon"></i>
+        <li class="nav-item">
+            <a class="nav-link" href="{{asset('admin/statistic')}}">
+                <span class="thongke menu-title">Thống kê</span>
+                <i class="fa-solid fa-filter-circle-dollar menu-icon"></i>
             </a>
-        </li> -->
+        </li>
         <li class="nav-item">
             <a class="nav-link" href="{{asset('admin/user')}}">
                 <span class=" menu-title">Nhân viên</span>
-                <i class=" fa-solid fa-user menu-icon"></i>
+                <i class="fa-solid fa-user menu-icon"></i>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{asset('admin/customer')}}">
+                <span class="menu-title">Hành Khách</span>
+                <i class="fa-solid fa-users menu-icon"></i>
             </a>
         </li>
         <li class="nav-item">

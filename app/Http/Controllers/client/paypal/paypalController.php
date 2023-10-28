@@ -118,33 +118,95 @@ class paypalController extends Controller
             $data = Session::get('data');
             $buss = chairModel::join('c_ng_g_x', 'ghe.idxe', '=', 'c_ng_g_x.idxe')->where('id_c_ng_g_x', $data['id_c_ng_g_x'])->where('maghe', $data['maghe'])->first();
             if (!auth('client')->user()) {
+                // $success = "Chúng tôi sẽ gọi đến số điện thoại của quý khách để xác nhận!";
+                // $data['idghe'] = $buss['idghe'];
+                // $data['TTV'] = 0;
+                // $data['rate'] = 0;
+                // ticketModel::create($data);
+                // chairModel::find($buss['idghe'])->update([
+                //     'datcho' => 1,
+                // ]);
                 $success = "Chúng tôi sẽ gọi đến số điện thoại của quý khách để xác nhận!";
-                $data['idghe'] = $buss['idghe'];
-                $data['TTV'] = 0;
-                $data['rate'] = 0;
-                ticketModel::create($data);
-                chairModel::find($buss['idghe'])->update([
-                    'datcho' => 1,
-                ]);
+
+                // $data_ticket['idkh'] = auth('client')->user()->idkh;
+                // $data_ticket['TTV'] = 0;
+                // orderModel::create($data_ticket);
+                // $iddc = orderModel::get()->last();
+                // $data_ticket['iddc'] = $iddc->iddc;
+                // foreach ($data_ticket['idghes'] as $checkbox) {
+                //     $data_ticket['idghe'] = $checkbox;
+                //     ticketModel::create($data_ticket);
+                // }
+                $data['idttv'] = 1;
+                $money = 0;
+                foreach ($data['idghes'] as $checkbox) {
+                    $money++;
+                }
+                $data['tongtien'] = $money * $data['giave'];
+                $data['del'] = 0;
+                orderModel::create($data);
+                $iddc = orderModel::get()->last();
+                $data['iddc'] = $iddc->iddc;
+                // dd($data);
+                foreach ($data['idghes'] as $checkbox) {
+                    $data['idghe'] = $checkbox;
+                    ticketModel::create($data);
+                }
                 return redirect('client/ticket')->with('success', $success);
             }
+            // $user = clientModel::join('nguoidung', 'nguoidung.idnd', '=', 'khachhang.idnd')
+            //     ->where('idkh', auth('client')->user()->idkh)->first();
+            // $name = $user->tennd;
+            // Mail::send('client.email.sendMail', compact('name'), function ($email) use ($name) {
+            //     $email->subject('BUSLINE');
+            //     $email->to(auth('client')->user()->email, $name);
+            // });
+            // $data['idghe'] = $buss['idghe'];
+            // $data['TTV'] = 0;
+            // $data['rate'] = 0;
+
+            // $data['idkh'] = auth('client')->user()->idkh;
+            // ticketModel::create($data);
+            // chairModel::find($buss['idghe'])->update([
+            //     'datcho' => 1,
+            // ]);
             $user = clientModel::join('nguoidung', 'nguoidung.idnd', '=', 'khachhang.idnd')
                 ->where('idkh', auth('client')->user()->idkh)->first();
             $name = $user->tennd;
-            Mail::send('client.email.sendMail', compact('name'), function ($email) use ($name) {
+            // dd(auth('client')->user()->email);
+            \Illuminate\Support\Facades\Mail::send('client.email.sendMail', compact('name'), function ($email) use ($name) {
                 $email->subject('BUSLINE');
                 $email->to(auth('client')->user()->email, $name);
             });
-            $data['idghe'] = $buss['idghe'];
-            $data['TTV'] = 0;
-            $data['rate'] = 0;
 
+            // $data_ticket['idkh'] = auth('client')->user()->idkh;
+            // $data_ticket['TTV'] = 0;
+            // orderModel::create($data_ticket);
+            // $iddc = orderModel::get()->last();
+            // $data_ticket['iddc'] = $iddc->iddc;
+            // foreach ($data_ticket['idghes'] as $checkbox) {
+            //     $data_ticket['idghe'] = $checkbox;
+            //     ticketModel::create($data_ticket);
+            // }
+            // return redirect('client/history/0');
             $data['idkh'] = auth('client')->user()->idkh;
-            ticketModel::create($data);
-            chairModel::find($buss['idghe'])->update([
-                'datcho' => 1,
-            ]);
-            return redirect('client/history/0');
+            $data['idttv'] = 1;
+            $money = 0;
+            foreach ($data['idghes'] as $checkbox) {
+                $money++;
+            }
+            $data['tongtien'] = $money * $data['giave'];
+            $data['del'] = 0;
+            orderModel::create($data);
+            $iddc = orderModel::get()->last();
+            $data['iddc'] = $iddc->iddc;
+            // dd($data);
+            foreach ($data['idghes'] as $checkbox) {
+                $data['idghe'] = $checkbox;
+                ticketModel::create($data);
+            }
+            // dd("asd");
+            return redirect('client/history/1');
         } else {
             $error = "Thanh toán qua PAYPAL thất bại!";
             return redirect('client/ticket')->with('error', $error);

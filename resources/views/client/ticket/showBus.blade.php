@@ -105,6 +105,7 @@ foreach ($users as $key => $user) {
                             </div>
                             <div class="container-fluid row seatBus mb-2">
                             </div>
+
                             <hr>
                             <div class="container-fluid row">
 
@@ -136,12 +137,12 @@ foreach ($users as $key => $user) {
                                     <tr>
                                         <td class="pt-1"><label for="tennd2">Họ tên: </label></td>
                                         <td>
-                                            <input type="text" class="w-100" oninput="Cookies.set('tennd2', this.value)" value="{{$tennd ?? $_COOKIE['tennd2']?? '' }}" id="bienso" name="tennd2" placeholder="Họ tên">
+                                            <input type="text" class=""  style="width: 300px;" oninput="Cookies.set('tennd2', this.value)" value="{{$tennd ?? $_COOKIE['tennd2']?? '' }}" id="bienso" name="tennd2" placeholder="Họ tên">
                                             @error('tennd2')
                                             <div style="color: red;" class="mb-2">{{ $message }}</div>
                                             @enderror
                                         </td>
-                                    </tr>   
+                                    </tr>
 
                                     <tr>
                                         <td class="pt-1"><label for="sdt2">SĐT:</label></td>
@@ -153,28 +154,46 @@ foreach ($users as $key => $user) {
                                         </td>
                                     </tr>
                                     <tr>
+                                        <td class="pt-1"><label for="giave">Tuyến:</label></td>
+                                        <td>
+                                            <input type="text" class="w-100" id="giave" name="" readonly value="{{$route->tentuyen}}">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pt-1"><label for="giave">Giờ chạy:</label></td>
+                                        <td>
+                                            <input type="text" class="w-100" id="giave" name="" readonly value="{{$times->tg_xuatben}}">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pt-1"><label for="giave">Ngày chạy:</label></td>
+                                        <td>
+                                            <input type="text" class="w-100" id="giave" name="" readonly value="{{$days->ngaychay}}">
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td class="pt-1"><label for="giave">Giá vé:</label></td>
                                         <td>
                                             <input type="text" class="w-100" id="giave" name="giave" readonly value="{{$route->giave}}">
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td  ><label for="PTTT">PTTT:</label></td>
+                                        <td><label for="idtt">PTTT:</label></td>
                                         <td>
-                                            <select name="PTTT" class="p-1 w-100">
-                                                <option value="0" {{ old('PTTT') == '0' ? 'selected' : '' }}>Thanh toán khi nhận vé</option>
-                                                <option value="1" {{ old('PTTT') == '1' ? 'selected' : '' }}>Thanh toán với <b><i>PAYPAL</i></b></option>
-                                                <option value="2" {{ old('PTTT') == '2' ? 'selected' : '' }}>Thanh toán với <b><i>MOMO</i></b></option>
+                                            <select name="idtt" class="p-1 w-100">
+                                                @foreach ($pttts as $pttt)
+                                                <option value="{{$pttt->idtt}}" {{ old('idtt') == '0' ? 'selected' : '' }}>{{$pttt->tentt}}</option>
+                                                @endforeach
                                             </select>
 
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td ><label for="id_c_ng_g_x">Xe:</label></td>
+                                        <td><label for="id_c_ng_g_x">Xe:</label></td>
                                         <td><select name="id_c_ng_g_x" id="bus" class="bus w-100">
                                                 <option value="">--- Chọn ---</option>
                                                 @foreach ($buss as $bus)
-                                                <option value="{{$bus->id_c_ng_g_x}}" {{(old('id_c_ng_g_x')==$bus->id_c_ng_g_x)? 'selected':''}}>{{$bus->bienso}} - {{$bus->tenloai}}</option>
+                                                <option value="{{$bus->id_c_ng_g_x}}" {{old('id_c_ng_g_x') == $bus->id_c_ng_g_x ?  'selected':''}}>{{$bus->bienso}} - {{$bus->tenloai}}</option>
                                                 @endforeach
                                             </select>
                                             @error('id_c_ng_g_x')
@@ -183,23 +202,31 @@ foreach ($users as $key => $user) {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td ><label for="maghe">Chỗ ngồi: </label></td>
+                                        <td style="padding-top: 7px;"><label for="maghe">Ghế: </label></td>
                                         <td>
-                                            <input type="text" class="w-100" oninput="Cookies.set('maghe', this.value)" value="{{$_COOKIE['maghe'] ?? ''}}" id="maghe" name="maghe" placeholder="Ví dụ: A1">
-                                            @error('maghe')
+                                            <div class="check_seat">
+
+                                                <!-- <input type="checkbox" name="idghes[]" id="checkbox-2" value="" disabled style="width: 15px;height: 15px;"/><span>A1 &nbsp;&nbsp;&nbsp;</span> 
+                                                <input type="checkbox" name="idghes[]" id="checkbox-3" value="" style="width: 15px;height: 15px;"/> <span>A2  &nbsp;&nbsp;&nbsp;</span> 
+                                                <input type="checkbox" name="idghes[]" id="checkbox-2" value="" style="width: 15px;height: 15px;"/> <span>A3  &nbsp;&nbsp;&nbsp;</span> 
+                                                <input type="checkbox" name="idghes[]" id="checkbox-3" value="" style="width: 15px;height: 15px;"/> <span>A4</span>  -->
+                                            </div>
+
+                                            <!-- <input type="text" class="w-100" oninput="Cookies.set('maghe', this.value)" value="{{$_COOKIE['maghe'] ?? ''}}" id="maghe" name="maghe" placeholder="Ví dụ: A1"> -->
+                                            @error('idghes')
                                             <div style="color: red;" class="mb-2">{{ $message }}</div>
                                             @enderror
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td ><label for="note">Ghi chú: </label></td>
+                                        <td><label for="note">Ghi chú: </label></td>
                                         <td class="pt-1">
                                             <textarea id="note" class="w-100 " name="note" placeholder="(Nếu có)"></textarea>
                                         </td>
                                     </tr>
                                 </table>
                                 <!-- <button type="submit" class="submitOrderTicket">submitOrderTicket</button> -->
-                                <button name="submitOrderTicket" type="button" class="btn btn-primary float-right " onclick="document.getElementById('form-id').submit();">Đặt vé</button>
+                                <button name="submitOrderTicket" type="button" class="btn btn-primary float-right " style="margin-right: 30px;" onclick="document.getElementById('form-id').submit();">Đặt vé</button>
                             </form>
                             @if (session('success'))
                             <script>
@@ -235,7 +262,7 @@ foreach ($users as $key => $user) {
         <!-- noi dung -->
         @include('client.layout.footer')
         <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-        <script src="js/script.js"></script>
+        <!-- <script src="js/script.js"></script> -->
         @include('client.layout.script')
 
     </div>

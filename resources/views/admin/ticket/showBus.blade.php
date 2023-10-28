@@ -85,7 +85,7 @@
             <!-- content-wrapper -->
 
 
-            <div class="container-fluid row mt-2 " style="">
+            <div class="container-fluid row mt-2 " >
                 <div class="row bg-white">
                     <!-- day la noi dung -->
 
@@ -141,7 +141,7 @@
                                         <tr>
                                             <td><label for="tennd2">Họ tên: </label></td>
                                             <td>
-                                                <input type="text" id="" name="tennd2" value="" placeholder="Họ tên">
+                                                <input type="text" id="" style="width: 350px;" name="tennd2" value="" placeholder="Họ tên">
                                                 @error('tennd2')
                                                 <div style="color: red;" class="mb-2">{{ $message }}</div>
 
@@ -153,7 +153,7 @@
                                             <td><label for="sdt2">SĐT:</label></td>
                                             <td>
 
-                                                <input type="text" id="sdt2" name="sdt2" value="" placeholder="Số điện thoại">
+                                                <input type="text" id="sdt2" class="w-100" name="sdt2" value="" placeholder="Số điện thoại">
                                                 @error('sdt2')
                                                 <div style="color: red;" class="mb-2">{{ $message }}</div>
 
@@ -164,16 +164,33 @@
                                         <tr>
                                             <td><label for="giave">Giá vé:</label></td>
                                             <td>
-                                                <input type="text" id="giave" name="giave" readonly value="{{$route->giave}}">
+                                                <input type="text" id="giave"class="w-100"  name="giave" readonly value="{{$route->giave}}">
                                             </td>
                                         </tr>
-
+                                        <tr>
+                                            <td class="pt-1"><label for="giave">Tuyến:</label></td>
+                                            <td>
+                                                <input type="text" class="w-100" id="giave" name="" readonly value="{{$route->tentuyen}}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="pt-1"><label for="giave">Giờ chạy:</label></td>
+                                            <td>
+                                                <input type="text" class="w-100" id="giave" name="" readonly value="{{$times->tg_xuatben}}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="pt-1"><label for="giave">Ngày chạy:</label></td>
+                                            <td>
+                                                <input type="text" class="w-100" id="giave" name="" readonly value="{{$days->ngaychay}}">
+                                            </td>
+                                        </tr>
                                         <tr>
                                             <td><label for="id_c_ng_g_x">Xe:</label></td>
-                                            <td><select name="id_c_ng_g_x" id="bus" class="bus">
+                                            <td><select name="id_c_ng_g_x" id="bus" class="bus w-100" >
                                                     <option value="">--- Chọn ---</option>
                                                     @foreach ($buss as $bus)
-                                                    <option value="{{$bus->id_c_ng_g_x}}">{{$bus->bienso}} - {{$bus->tenloai}}</option>
+                                                    <option value="{{$bus->id_c_ng_g_x}}" >{{$bus->bienso}} - {{$bus->tenloai}}</option>
                                                     @endforeach
                                                 </select>
                                                 @error('id_c_ng_g_x')
@@ -183,24 +200,31 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td><label for="maghe">Chỗ ngồi: </label></td>
+                                            <td style="padding-top: 7px;"><label for="maghe">Ghế: </label></td>
                                             <td>
-                                                <input type="text" id="maghe" name="maghe" value="" placeholder="Ví dụ: A1">
-                                                @error('maghe')
-                                                <div style="color: red;" class="mb-2">{{ $message }}</div>
+                                                <div class="check_seat">
 
+                                                    <input type="checkbox" name="idghes[]" id="checkbox-2" value="" disabled style="width: 15px;height: 15px;" /><span>A1 &nbsp;&nbsp;&nbsp;</span>
+                                                    <input type="checkbox" name="idghes[]" id="checkbox-3" value="" style="width: 15px;height: 15px;" /> <span>A2 &nbsp;&nbsp;&nbsp;</span>
+                                                    <input type="checkbox" name="idghes[]" id="checkbox-2" value="" style="width: 15px;height: 15px;" /> <span>A3 &nbsp;&nbsp;&nbsp;</span>
+                                                    <input type="checkbox" name="idghes[]" id="checkbox-3" value="" style="width: 15px;height: 15px;" /> <span>A4</span>
+                                                </div>
+
+                                                <!-- <input type="text" class="w-100" oninput="Cookies.set('maghe', this.value)" value="{{$_COOKIE['maghe'] ?? ''}}" id="maghe" name="maghe" placeholder="Ví dụ: A1"> -->
+                                                @error('idghes')
+                                                <div style="color: red;" class="mb-2">{{ $message }}</div>
                                                 @enderror
                                             </td>
                                         </tr>
                                         <tr>
                                             <td><label for="note">Ghi chú: </label></td>
                                             <td>
-                                                <textarea id="note" name="note" placeholder="(Nếu có)"></textarea>
+                                                <textarea id="note" class="w-100" name="note" placeholder="(Nếu có)"></textarea>
 
                                             </td>
                                         </tr>
                                     </table>
-                                    <button type="button" class="btn btn-primary float-right" onclick="document.getElementById('form-id').submit();">Đặt vé</button>
+                                    <button type="button" class="btn btn-primary float-right" style="margin-left: 68%;" onclick="document.getElementById('form-id').submit();">Đặt vé</button>
                                 </form>
                                 @if (session('success'))
                                 <script>

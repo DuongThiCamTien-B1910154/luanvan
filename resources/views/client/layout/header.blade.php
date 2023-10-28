@@ -27,39 +27,5 @@
 
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
-    <!-- <script src="https://www.paypalobjects.com/api/checkout.js"></script> -->
-
-    <!-- <script>
-        paypal.Button.render({
-            env: 'sandbox',
-            client: {
-                sandbox: 'Afc-CfzqRA-W3aPhQ_HKWE7dGWBeTafcmX2zP5z36_a049n7V69BWJ0wh99k_gnheFTqClUWbl5R3_Tt',
-                production: 'demo'
-            },
-            
-            locale: 'en_US',
-            style: {
-                size: 'small',
-                color: 'gold',
-                shape: 'pill',
-            },
-            commit: true,
-            payment: function(data, actions) {
-                return actions.payment.create({
-                    transactions: [{
-                        amount: {
-                            total: '100',
-                            currency: 'USD'
-                        }
-                    }]
-                })
-
-            },
-            onAuthorize: function(data, actions) {
-                return actions.payment.execute().then(function() {
-                    window.alert("cam on ban da lua chon mua san pham cua chung toi")
-                });
-            }
-        }, '#paypal-button');
-    </script> -->
+    
 </head>

@@ -5,16 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ratingModel extends Model
+class bankingModel extends Model
 {
     use HasFactory;
+    protected $table = "pttt";
     public $timestamps = false;
-    protected $table = "nhanxet";
-    protected $primaryKey = 'idnx';
+    protected $primaryKey = 'idtt';
     protected $fillable = [
-        'idnx',
-        'iddc',
-        'noidungbl',
-        'rating',
+        'idtt',
+        'tentt',
     ];
 }

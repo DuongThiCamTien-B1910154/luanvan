@@ -86,18 +86,18 @@
                         <td>Chuyển khoản</td>
                         @endif
                         <td>
-                            <a href="{{asset('admin/ticket/detailTicket')}}/{{$ticket->idvx}}"><b>Chi tiết</b></a>
+                            <a href="{{asset('admin/ticket/detailTicket')}}/{{$ticket->iddc}}"><b>Chi tiết</b></a>
 
                         </td>
                         <form action="" method="post">
                             @csrf
-                            @if ($ticket->TTV == 0)
+                            @if ($ticket->idttv == 1)
                             <td>
-                                <a href="{{asset('admin/ticket/browseTicket')}}/{{$ticket->idvx}}" class="btn btn-warning w-100">Chờ duyệt</a>
+                                <a href="{{asset('admin/ticket/browseTicket')}}/{{$ticket->iddc}}" class="btn btn-warning w-100">{{$ticket->tentrangthai}}</a>
                             </td>
-                            @elseif($ticket->TTV == 1)
+                            @elseif($ticket->idttv == 2)
                             <td>
-                                <a href="#" class="btn btn-info w-100">Đã duyệt</a>
+                                <a href="#" class="btn btn-info w-100">{{$ticket->tentrangthai}}</a>
                             </td>
                             @else
                             <td>
@@ -107,7 +107,7 @@
 
                             <td>
                                 @method('delete')
-                                <a href="{{asset('admin/ticket/deleteTicket')}}/{{$ticket->idghe}}" class="btn btn-danger" onclick="return confirm('Bạn có chắc muốn xóa không?')">Xóa</a>
+                                <a href="{{asset('admin/ticket/deleteTicket')}}/{{$ticket->iddc}}" class="btn btn-danger" onclick="return confirm('Bạn có chắc muốn xóa không?')">Xóa</a>
                             </td>
 
                         </form>

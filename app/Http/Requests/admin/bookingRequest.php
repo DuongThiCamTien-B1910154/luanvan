@@ -27,7 +27,7 @@ class bookingRequest extends FormRequest
             'tennd2' => 'required',
             // 'sdt2' => 'required',
             'id_c_ng_g_x' => 'required',
-            'maghe' => 'required',
+            'idghes' => 'required',
             'sdt2' => 'numeric|required|digits:10',
 
         ];
@@ -38,7 +38,7 @@ class bookingRequest extends FormRequest
             'tennd2.required' => '* Tên không được để trống!',
             // 'sdt2.required' => '* Số điện thoại không được để trống!',
             'id_c_ng_g_x.required' => '* Xe không được để trống!',
-            'maghe.required' => '* Chố ngồi không được để trống!',
+            'idghes.required' => '* Ghế ngồi không được để trống!',
             'sdt2.required' => '* Số điện thoại không được để trống!',
             'sdt2.digits' => '* Số điện thoại phải có độ dài :digits',
             'sdt2.numeric' => '* Số điện thoại phải là số!',

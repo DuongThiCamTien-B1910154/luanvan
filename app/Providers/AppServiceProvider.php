@@ -54,6 +54,8 @@ class AppServiceProvider extends ServiceProvider
 
         $admin = new adminModel();
         $admins = $admin->getAllAdmin();
+
+        
         View::share(compact('position', 'province', 'district', 'town', 'typeBus', 'users', 'admins'));
     }
 }
