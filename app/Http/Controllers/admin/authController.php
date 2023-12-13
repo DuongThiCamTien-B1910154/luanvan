@@ -53,7 +53,7 @@ class authController extends Controller
             if (auth('admin')->user()->idcv == 1 || auth('admin')->user()->idcv == 4) {
                 return redirect('admin/bus');
             } else if (auth('admin')->user()->idcv == 2) {
-                return redirect('admin/ticket');
+                return redirect('admin/ticket/show/1');
             } else if (auth('admin')->user()->idcv == 3 || auth('admin')->user()->idcv == null) {
                 return redirect('admin/user');
             } else {

@@ -16,6 +16,7 @@ use App\Models\busModel;
 use App\Models\dayModel;
 use App\Models\historyApproveModel;
 use App\Models\orderModel;
+use App\Models\statusTicketModel;
 use App\Models\ticketModel;
 use App\Models\timeModel;
 use App\Models\tripModel;
@@ -23,18 +24,43 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use PDF;
+use Illuminate\Support\Facades\DB;
 // use App\Models\adminModel;
 
 class ticketController extends Controller
 {
-    public function showTicket(Request $request)
+    public function showTicket(Request $request, $idttv)
     {
         // $this->data['title'] = "Thành viên";
         // $this->data['error'] = "Vui lòng kiểm tra lại !";
         $search = $request['search'] ?? "";
 
         if ($search != "") {
-            $tickets = orderModel::join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'datcho.id_c_ng_g_x')
+            // dd($search);
+            // $ttv = statusTicketModel::where('idttv', $idttv)->first();
+            // dd($ttv->idttv);
+            // $g = $ttv->join('datcho', 'datcho.idttv', '=', $ttv->idttv);
+            // $tickets = orderModel::join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'datcho.id_c_ng_g_x')
+            //     ->join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')
+            //     ->join('loaixe', 'loaixe.idlx', '=', 'xe.idlx')
+            //     ->join('chuyen', 'chuyen.idchuyen', '=', 'c_ng_g_x.idchuyen')
+            //     ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
+            //     ->join('gio', 'gio.idgio', '=', 'c_ng_g_x.idgio')
+            //     ->join('tuyen', 'tuyen.idtuyen', '=', 'chuyen.idtuyen')
+            //     ->join('trangthaive', 'trangthaive.idttv', '=', 'datcho.idttv')
+            //     // ->where('trangthaive', 'trangthaive.idttv','=',$idvx)
+            //     ->where('sdt2', 'LIKE', "%$search%")
+            //     ->orWhere('tennd2', 'LIKE', "%$search%")
+            //     ->orWhere('2tentuyen', 'LIKE', "%$search%")
+            //     // ->where('datcho.idttv', '!=', '4')
+            //     ->where('datcho.idttv', '!=', '0')
+            //     ->where('datcho.del', '!=', '1')
+            //     ->where('trangthaive.idttv', $idttv)
+            //     ->orderBy('datcho.created_at', 'asc')
+            //     ->get();
+
+            $tickets = DB::table('datcho')
+                ->join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'datcho.id_c_ng_g_x')
                 ->join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')
                 ->join('loaixe', 'loaixe.idlx', '=', 'xe.idlx')
                 ->join('chuyen', 'chuyen.idchuyen', '=', 'c_ng_g_x.idchuyen')
@@ -42,14 +68,19 @@ class ticketController extends Controller
                 ->join('gio', 'gio.idgio', '=', 'c_ng_g_x.idgio')
                 ->join('tuyen', 'tuyen.idtuyen', '=', 'chuyen.idtuyen')
                 ->join('trangthaive', 'trangthaive.idttv', '=', 'datcho.idttv')
-                ->where('sdt2', 'LIKE', "%$search%")
-                ->orWhere('tennd2', 'LIKE', "%$search%")
-                ->orWhere('tentuyen', 'LIKE', "%$search%")
-                ->orderBy('datcho.idttv', 'asc')
-                // ->where('datcho.idttv', '!=', '4')
+                ->join('pttt', 'pttt.idtt', '=', 'datcho.idtt')
+                ->select('*')
+                ->where(function ($query) use ($search) {
+                    $query->where('sdt2', 'LIKE', "%$search%")
+                        ->orWhere('tennd2', 'LIKE', "%$search%")
+                        ->orWhere('tentuyen', 'LIKE', "%$search%");
+                })
                 ->where('datcho.idttv', '!=', '0')
                 ->where('datcho.del', '!=', '1')
+                ->where('trangthaive.idttv', $idttv)
+                ->orderBy('datcho.created_at', 'desc')
                 ->get();
+            // dd($tickets);
         } else {
             // $tickets = ticketModel::join('datcho', 'datcho.iddc', '=', 'chitietdatcho.iddc')
             //     ->join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'datcho.id_c_ng_g_x')
@@ -68,11 +99,13 @@ class ticketController extends Controller
                 ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
                 ->join('gio', 'gio.idgio', '=', 'c_ng_g_x.idgio')
                 ->join('tuyen', 'tuyen.idtuyen', '=', 'chuyen.idtuyen')
+                ->join('pttt', 'pttt.idtt', '=', 'datcho.idtt')
                 ->join('trangthaive', 'trangthaive.idttv', '=', 'datcho.idttv')
-                ->orderBy('datcho.idttv', 'asc')
+                ->orderBy('datcho.created_at', 'desc')
                 // ->where('datcho.idttv', '!=', '4')
                 ->where('datcho.idttv', '!=', '0')
                 ->where('datcho.del', '!=', '1')
+                ->where('trangthaive.idttv', $idttv)
                 ->get();
         }
         // $test = ticketModel::all();
@@ -145,13 +178,12 @@ class ticketController extends Controller
         // ]);
         // ticketModel::where('idghe', $id)->delete();
         $success = "Xóa vé thành công!";
-        $data = orderModel::find($id)->first();
-        // dd($data['idttv']);
-        if ($data->idttv < 3) {
+        $data = orderModel::where('iddc', $id)->first();
+        if ($data->idttv <= 2) {
             ticketModel::where('iddc', $id)->delete();
-            orderModel::find($id)->delete();
+            orderModel::where('iddc', $id)->delete();
         } else {
-            orderModel::find($id)->update([
+            orderModel::where('iddc', $id)->update([
                 'del' => 1
             ]);
         }
@@ -165,20 +197,20 @@ class ticketController extends Controller
         // statistic
         $money = orderModel::where('iddc', $iddc)->first('tongtien');
         $day = orderModel::where('iddc', $iddc)
-        ->join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x','=', 'datcho.id_c_ng_g_x')
-        ->join('ngaychay','ngaychay.idngay','=', 'c_ng_g_x.idngay')
-        ->first('ngaychay');
+            ->join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'datcho.id_c_ng_g_x')
+            ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
+            ->first('ngaychay');
         $countTicket = ticketModel::where('iddc', $iddc)->count();
         $isExist = statisticModel::where('ngayxechay', $day->ngaychay)->exists();
         // dd($isExist);
-        if($isExist){
-            $sta = statisticModel::where('ngayxechay',$day->ngaychay)->first();
-            statisticModel::where('ngayxechay',$day->ngaychay)->update([
+        if ($isExist) {
+            $sta = statisticModel::where('ngayxechay', $day->ngaychay)->first();
+            statisticModel::where('ngayxechay', $day->ngaychay)->update([
                 'tongtien' => $sta['tongtien']  + $money->tongtien,
                 'ngayxechay' => $day->ngaychay,
-                'soluongve' => $sta['soluongve']+ $countTicket,
+                'soluongve' => $sta['soluongve'] + $countTicket,
             ]);
-        }else{
+        } else {
             $statis['tongtien'] = $money->tongtien;
             $statis['ngayxechay'] = $day->ngaychay;
             $statis['soluongve'] = $countTicket;
@@ -407,7 +439,7 @@ class ticketController extends Controller
     }
     public function findBus(Request $request)
     {
-     
+
         // $data = $request->all();
         // $check = tripModel::join('c_ng_g_x', 'c_ng_g_x.idchuyen', '=', 'chuyen.idchuyen')
         //     ->where('idtuyen', $data['idtuyen'])
@@ -415,7 +447,7 @@ class ticketController extends Controller
         //     ->where('idngay', $data['idngay'])
         //     ->whereNotNull('idxe')
         //     ->exists();
-        
+
         // if (!$check) {
         //     $error = "Không tìm thấy xe phù hợp!";
         //     return redirect()->back()->with('error', $error);
@@ -425,12 +457,12 @@ class ticketController extends Controller
         //     ->join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')
         //     ->join('loaixe', 'loaixe.idlx', '=', 'xe.idlx')
         //     ->where('idtuyen', $data['idtuyen'])->where('idgio', $data['idgio'])->where('idngay', $data['idngay'])->get();
-        
+
         // $route = tripModel::join('tuyen', 'chuyen.idtuyen', '=', 'tuyen.idtuyen')->where('tuyen.idtuyen', $data['idtuyen'])->distinct()->first();
         $data = $request->all();
-        $idtuyen = $data['idtuyen'] ;
-        $idgio = $data['idgio'] ;
-        $idngay  = $data['idngay'] ;
+        $idtuyen = $data['idtuyen'];
+        $idgio = $data['idgio'];
+        $idngay  = $data['idngay'];
         $check = tripModel::join('c_ng_g_x', 'c_ng_g_x.idchuyen', '=', 'chuyen.idchuyen')
             ->where('idtuyen', $idtuyen)
             ->where('idgio', $idgio)
@@ -453,11 +485,11 @@ class ticketController extends Controller
         // $user = clientModel::join('nguoidung', 'nguoidung.idnd', '=', 'khachhang.idnd')->get();
         // dd($user);
         $route = tripModel::join('tuyen', 'chuyen.idtuyen', '=', 'tuyen.idtuyen')->where('tuyen.idtuyen', $idtuyen)->distinct()->first();
-        $times = timeModel::where('idgio',$idgio)->first();
-        $days = dayModel::where('idngay',$idngay)->first();
+        $times = timeModel::where('idgio', $idgio)->first();
+        $days = dayModel::where('idngay', $idngay)->first();
         // dd($route);
         // return view('client.ticket.showBus', compact('buss', 'route', 'pttts','days','times'));
-        return view('admin.ticket.showBus', compact('buss', 'route', 'pttts','days','times'));
+        return view('admin.ticket.showBus', compact('buss', 'route', 'pttts', 'days', 'times'));
     }
 
     public function findRoute(Request $request)
@@ -498,12 +530,19 @@ class ticketController extends Controller
                     $output .= '<option value ="' . $time->idgio . '">' . $time->tg_xuatben . '</option>';
                 }
             } else if ($data['action'] == "time") {
+                $today = strtotime(now()->format('Y-m-d'));
+
                 $days = timeModel::join('c_ng_g_x', 'gio.idgio', '=', 'c_ng_g_x.idgio')
                     ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
-                    ->where('gio.idgio', $data['ma'])->distinct('ngaychay.idngay', 'ngaychay.ngaychay')->get(['ngaychay.idngay', 'ngaychay.ngaychay']);
+
+                    ->where('gio.idgio', $data['ma'])
+                    ->distinct('ngaychay.idngay', 'ngaychay.ngaychay')
+                    ->get(['ngaychay.idngay', 'ngaychay.ngaychay']);
                 $output .= '<option value ="">--- Chọn ---</option>';
                 foreach ($days as $key => $day) {
-                    $output .= '<option value ="' . $day->idngay . '">' . $day->ngaychay . '</option>';
+                    $today_get = strtotime($day->ngaychay);
+                    if ($today >= $today_get)
+                        $output .= '<option value ="' . $day->idngay . '">' . $day->ngaychay . '</option>';
                 }
             }
             echo ($output);
@@ -511,7 +550,7 @@ class ticketController extends Controller
     }
     public function seat(Request $request)
     {
-        
+
         $data = $request->all();
         // if ($data['action']) {
         $output = '';
@@ -687,6 +726,122 @@ class ticketController extends Controller
     }
     public function check_seat(Request $request)
     {
+        // $data = $request->all();
+
+        // $output = '';
+
+        // $c_ng_g_x = tripDayTimeBusModel::join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')->find($data['id_c_ng_g_x']);
+
+        // $buss = busModel::join('ghe', 'xe.idxe', '=', 'ghe.idxe')->where('ghe.idxe', $c_ng_g_x['idxe'])->get();
+
+        // if ($c_ng_g_x['idlx'] == 1) {
+        //     foreach ($buss as $key => $bus) {
+        //         if ($key < 10) {
+        //             // $isDel = orderModel::where('idttv',)
+        //             $isExist = ticketModel::join('datcho', 'datcho.iddc', '=', 'chitietdatcho.iddc')
+        //                 ->where('idghe', $bus['idghe'])
+        //                 ->where('id_c_ng_g_x', $data['id_c_ng_g_x'])
+        //                 ->where('idttv', '!=', 0)
+        //                 ->where('idttv', '!=', 3)
+        //                 // ->where('idttv', '!=', 4)
+        //                 ->exists();
+
+        //             if ($isExist) {
+        //                 $output .= '
+        //                     <input type="checkbox" name="idghes[]"  style="width: 15px;height: 15px;" value="' . $bus['idghe'] . '" disabled/> ' . $bus['maghe'] . '&nbsp; &nbsp;&nbsp;';
+        //                 if ($key + 1 < 10) {
+        //                     $output .= '&nbsp;&nbsp;';
+        //                 }
+        //                 if (($key + 1) % 4 == 0) {
+        //                     $output .= '</br>';
+        //                 }
+        //             } else {
+        //                 $output .= '
+        //                     <input type="checkbox" name="idghes[]" style="width: 15px;height: 15px;" value="' . $bus['idghe'] . '"/> ' . $bus['maghe'] . '&nbsp; &nbsp;&nbsp;';
+        //                 if ($key + 1 < 10) {
+        //                     $output .= '&nbsp;&nbsp;';
+        //                 }
+        //                 if (($key + 1) % 4 == 0) {
+        //                     $output .= '</br>';
+        //                 }
+        //             }
+        //         }
+        //     }
+        //     $output .= '</br>';
+
+        //     foreach ($buss as $key => $bus) {
+        //         // echo($key);
+        //         if ($key >= 10) {
+        //             $isExist = ticketModel::join('datcho', 'datcho.iddc', '=', 'chitietdatcho.iddc')
+        //                 ->where('idghe', $bus['idghe'])
+        //                 ->where('id_c_ng_g_x', $data['id_c_ng_g_x'])
+        //                 ->where('idttv', '!=', 0)
+        //                 ->where('idttv', '!=', 3)
+        //                 // ->where('idttv', '!=', 4)
+        //                 ->exists();
+        //             if ($isExist) {
+        //                 $output .= '
+        //                     <input type="checkbox" name="idghes[]"  style="width: 15px;height: 15px;" value="' . $bus['idghe'] . '" disabled/> ' . $bus['maghe'] . '&nbsp;&nbsp;&nbsp; ';
+        //                 if ($key - 10 + 1 < 10) {
+        //                     $output .= '&nbsp;&nbsp;&nbsp;';
+        //                 }
+        //                 if (($key + 1) % 4 == 0) {
+        //                     $output .= '</br>';
+        //                 }
+        //             } else {
+        //                 $output .= '
+        //                     <input type="checkbox" name="idghes[]" style="width: 15px;height: 15px;" value="' . $bus['idghe'] . '"/> ' . $bus['maghe'] . '&nbsp;&nbsp;&nbsp;';
+        //                 if ($key - 10 + 1 < 10) {
+        //                     $output .= '&nbsp;&nbsp;&nbsp;';
+        //                 }
+        //                 if (($key + 1) % 4 == 0) {
+        //                     $output .= '</br>';
+        //                 }
+        //             }
+        //         }
+
+        //         // $output .= '<option value ="' . $district->idqh . '">' . $district->name_district . '</option>';
+        //     }
+        // }
+
+        // // giuong ngoi
+        // else {
+        //     foreach ($buss as $key => $bus) {
+        //         $isExist = ticketModel::join('datcho', 'datcho.iddc', '=', 'chitietdatcho.iddc')
+        //             ->where('idghe', $bus['idghe'])
+        //             ->where('id_c_ng_g_x', $data['id_c_ng_g_x'])
+        //             ->where('idttv', '!=', 0)
+        //             ->where('idttv', '!=', 3)
+        //             // ->where('del', '!=', 1)
+        //             ->exists();
+
+        //         if ($isExist) {
+        //             $output .= '
+        //                 <input type="checkbox" name="idghes[]"  style="width: 15px;height: 15px;" value="' . $bus['idghe'] . '" disabled/> ' . $bus['maghe'] . '&nbsp; &nbsp;&nbsp;';
+        //             if ($key + 1 < 10) {
+        //                 $output .= '&nbsp;&nbsp;';
+        //             }
+        //             if (($key + 1) % 4 == 0) {
+        //                 $output .= '</br>';
+        //             }
+        //         } else {
+        //             $output .= '
+        //                 <input type="checkbox" name="idghes[]" style="width: 15px;height: 15px;" value="' . $bus['idghe'] . '"/> ' . $bus['maghe'] . '&nbsp; &nbsp;&nbsp;';
+        //             if ($key + 1 < 10) {
+        //                 $output .= '&nbsp;&nbsp;';
+        //             }
+        //             if (($key + 1) % 4 == 0) {
+        //                 $output .= '</br>';
+        //             }
+        //         }
+
+        //         // $output .= '<option value ="' . $district->idqh . '">' . $district->name_district . '</option>';
+        //     }
+        // }
+        // // }
+        // echo ($output);
+        // echo ("tientien0");
+        // }
         $data = $request->all();
 
         $output = '';
@@ -708,8 +863,9 @@ class ticketController extends Controller
                         ->exists();
 
                     if ($isExist) {
+                        // del disabled
                         $output .= '
-                            <input type="checkbox" name="idghes[]"  style="width: 15px;height: 15px;" value="' . $bus['idghe'] . '" disabled/> ' . $bus['maghe'] . '&nbsp; &nbsp;&nbsp;';
+                        <i style="width: 20px;height: 15px;" class="fa-solid fa-rectangle-xmark"></i>' . $bus['maghe'] . '&nbsp; &nbsp;';
                         if ($key + 1 < 10) {
                             $output .= '&nbsp;&nbsp;';
                         }
@@ -741,8 +897,9 @@ class ticketController extends Controller
                         // ->where('idttv', '!=', 4)
                         ->exists();
                     if ($isExist) {
+                        // del disabled
                         $output .= '
-                            <input type="checkbox" name="idghes[]"  style="width: 15px;height: 15px;" value="' . $bus['idghe'] . '" disabled/> ' . $bus['maghe'] . '&nbsp;&nbsp;&nbsp; ';
+                        <i style="width: 20px;height: 15px;" class="fa-solid fa-rectangle-xmark"></i>' . $bus['maghe'] . '&nbsp; &nbsp;';
                         if ($key - 10 + 1 < 10) {
                             $output .= '&nbsp;&nbsp;&nbsp;';
                         }
@@ -777,10 +934,14 @@ class ticketController extends Controller
                     ->exists();
 
                 if ($isExist) {
+                    // del disabled
                     $output .= '
-                        <input type="checkbox" name="idghes[]"  style="width: 15px;height: 15px;" value="' . $bus['idghe'] . '" disabled/> ' . $bus['maghe'] . '&nbsp; &nbsp;&nbsp;';
+                    <i style="width: 20px;height: 15px;" class="fa-solid fa-rectangle-xmark"></i>' . $bus['maghe'] . '&nbsp; &nbsp;
+                        ';
                     if ($key + 1 < 10) {
                         $output .= '&nbsp;&nbsp;';
+                    } else {
+                        $output .= '';
                     }
                     if (($key + 1) % 4 == 0) {
                         $output .= '</br>';

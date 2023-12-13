@@ -1,6 +1,7 @@
 <!-- admin -->
 <script type="text/javascript">
     $(document).ready(function() {
+        var intervalIdSeat = null;
         $('.choose').on('change', function() {
             var action = $(this).attr('id');
             var matp = $(this).val();
@@ -78,7 +79,7 @@
 
         );
         // load ajax after 5s
-        setInterval(function() {
+        intervalIdSeat = setInterval(function() {
             var privateTeam = $('.bus').val();
             console.log('privateTeam')
             hide_show(privateTeam);
@@ -254,6 +255,7 @@
 
         // statictis
         $('.sortSta').on('click', function() {
+            clearInterval(intervalIdSeat)
             var input_froms = $(".input_froms").val()
             var input_tos = $(".input_tos").val()
 
@@ -288,6 +290,7 @@
                 },
                 success: function(data) {
                     console.log(data)
+                    // alter(data)
                     $('.profit').html(data);
                     // chart.setChart(data)
                     // chart.setData(data);

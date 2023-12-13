@@ -31,9 +31,23 @@ class scheduleController extends Controller
             ->join('gio', 'gio.idgio', '=', 'c_ng_g_x.idgio')
             ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
             ->join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')
+            ->orderBy('ngaychay.ngaychay', 'desc')
             ->where('idtuyen', $id)->get();
         $admins = adminModel::join('nguoidung', 'admin.idnd', '=', 'nguoidung.idnd')->get();
         // dd($admins);
-        return view('client/schedule/timeSchedule', compact('trips', 'routes', 'buss','admins'));
+        return view('client/schedule/timeSchedule', compact('trips', 'routes', 'buss', 'admins'));
+    }
+    public function searchSchedule(Request $request)
+    {
+        $data = $request->all();
+        $key = $data['keySearch'];
+        $trip = routeModel::join('tinhthanhpho', 'tuyen.diemKT', '=', 'tinhthanhpho.idtp')
+            ->where('name_city', 'LIKE', "%$key%")
+            ->get();
+        $output = '';
+        foreach ($trip as $key => $value) {
+            $output .= '<a href="http://busline.com/client/schedule/timeSchedule/' . $value->idtuyen .'">' . $value->tentuyen . '</a>';
+        }
+        echo ($output);
     }
 }

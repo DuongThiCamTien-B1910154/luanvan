@@ -61,6 +61,7 @@
                     {{ session('error') }}
                 </div>
                 @endif
+                
                 <form action="{{asset('client/ticket/findBus')}}" enctype="multipart/form-data" class="container-fluid row mt-3" method="" id="form-id">
                     @csrf
                     <div class="form-group col-4">
@@ -99,7 +100,7 @@
         @include('client.layout.footer')
         <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
         <script src="js/script.js"></script>
-        @include('client.layout.script')
+        <!-- @include('client.layout.script') -->
 
     </div>
 

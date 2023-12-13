@@ -16,6 +16,7 @@ class historyClientController extends Controller
 {
     public function showHistory($ttv)
     {
+        // dd("12");
         // $ticket = ticketModel::join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'vexe.id_c_ng_g_x')
         //     ->join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')
         //     ->where('idkh', $id)->get();
@@ -65,7 +66,7 @@ class historyClientController extends Controller
                 ->where('idttv', $ttv)
                 // ->where('del','!=',1)
                 ->where('del','!=',2)
-                ->orderBy('ngaychay', 'desc')->paginate(2);
+                ->orderBy('created_at', 'desc')->paginate(2);
 
             $chairs = orderModel::join('chitietdatcho', 'chitietdatcho.iddc', '=', 'datcho.iddc')
                 ->join('ghe', 'ghe.idghe', '=', 'chitietdatcho.idghe')
@@ -73,7 +74,7 @@ class historyClientController extends Controller
                 ->where('datcho.idttv', $ttv)
                 // ->where('del','!=',1)
                 ->where('del','!=',2)
-                ->orderBy('datcho.idttv', 'desc')
+                ->orderBy('created_at', 'desc')
                 ->get();
         // }
         //     // ->join('nhanxet', 'nhanxet.id_c_ng_g_x', '=', 'c_ng_g_x.id_c_ng_g_x')
@@ -141,6 +142,7 @@ class historyClientController extends Controller
             ratingModel::create($data);
             echo ('success');
         }
+        // return redirect()->back()->with('success', 'Tài khoản đã bị vô hiệu hóa do hoạt đông bất thường !');
         // // $data['maghe'];
     }
 }

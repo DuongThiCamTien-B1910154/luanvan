@@ -2,6 +2,8 @@
 <script type="text/javascript">
     $(document).ready(function() {
         // adress
+        var intervalId = null;
+        var intervalIdBus = null;
         $('.choose').on('change', function() {
                 var action = $(this).attr('id');
                 var matp = $(this).val();
@@ -39,7 +41,7 @@
 
         );
         // load ajax after 5s
-        setInterval(function() {
+        intervalIdBus = setInterval(function() {
             var privateTeam = $('.bus').val();
             // console.log(privateTeam)
             hide_show(privateTeam);
@@ -138,18 +140,21 @@
                         _token: _token,
                     },
                     success: function(data) {
-                        console.log(data)
-                        if (data == "err") {
-                            alert("Bạn đã đánh giá trước đó!");
-                        } else {
+                        // console.log(data)
+                        if (data == "success") {
                             alert("Đánh giá thành công");
-                            $('#ModalCreateRating').modal().hide()
-                            $('.modal-backdrop').remove()
-                            $('body').removeClass('modal-open');
-                        }
+                        } 
+                        // $('#ModalCreateRating').modal().hide()
+                        // $('.modal-backdrop').remove()
+                        // $('body').removeClass('modal-open');
+                        window.location.reload(
+                            // alert("Đánh giá thành công")
+                        );
+                        // }
                     }
                 })
             )
+            clearInterval(intervalIdBus)
         })
 
         // get id_rating 
@@ -173,9 +178,31 @@
                 }
             })
             $(".list_text").text('').text(listRatingText[5]).show()
+            clearInterval(intervalIdBus)
+        })
+        // search input
+        $('.search').on('keyup', function(event) {
+            event.preventDefault
+            var keySearch = $(".search").val()
+            // console.log(keySearch)
+            search(keySearch)
+            clearInterval(intervalId)
+            clearInterval(intervalIdBus)
+        })
+        //  search voice
+        $('.voice').on('click', function(event) {
+            event.preventDefault
+            intervalId = setInterval(function() {
+                var keySearch = $(".search").val()
+                console.log(keySearch)
+                search(keySearch)
+            }, 5000);
+
         })
 
-
+        // $('.search123').on('click', function() {
+        //     console.log("dauhyuisy")
+        // })
         // review rating
         $('.id_rating_view').on('click', function() {
             listRatingText = {
@@ -197,6 +224,7 @@
             })
             $(".content_review").text(content)
             $(".list_text").text('').text(listRatingText[number]).show()
+            clearInterval(intervalIdBus)
         })
     });
     // load seat when submit err
@@ -237,9 +265,29 @@
         }
     }
 
+    function search(keySearch) {
+        // event.preventDefault();
+        // var keySearch = $(".search").val()
+        // console.log("tien")
+        // console.log(keySearch)
+        var _token = $('input[name="_token"]').val();
+        $.ajax({
+            method: "POST",
+            url: '{{url("/client/schedule/searchSchedule")}}',
+            data: {
+                keySearch: keySearch,
+                _token: _token,
+            },
+            success: function(data) {
+                // console.log(data)
+                $('.dropdownSearch').html(data);
+            }
+        });
+    }
     //  rating_start
     $(function() {
         let listStart = $(".list_start .fa");
+
         listRatingText = {
             1: 'Không thích',
             2: 'Tạm được',

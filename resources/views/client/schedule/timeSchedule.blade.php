@@ -17,9 +17,9 @@
 
                 <!-- day la noi dung -->
                 <h2 class="col-12 text-uppercase  p-3 mt-2 text-black text-center" style="background-color: #48f0df; font-family: Cursive;">
-                <a href="{{asset('client/schedule')}}" style="float: left;"><i class="fa-solid fa-left-long text-dark"></i></a>
-                <b>Tuyến xe</b>
-            </h2>
+                    <a href="{{asset('client/schedule')}}" style="float: left;"><i class="fa-solid fa-left-long text-dark"></i></a>
+                    <b>Tuyến xe</b>
+                </h2>
 
                 <h4>
                     @foreach ($province as $pro)
@@ -69,13 +69,23 @@
                             @if($user->idadmin == $trip->idadmin)
                             <td>{{$user->tennd}}</td>
                             @endif
+
                             @endforeach
-                            <form action="" method="GET" enctype=" multipart/form-data" >
+
+                            <form action="" method="GET" enctype=" multipart/form-data">
                                 @csrf
                                 <td>
+
+                                    <!-- <button type="button" class=" btn btn-warning">
+                                        <a href=" {{asset('client/ticket/findBus')}}/{{$trip->idtuyen}}/{{$trip->idgio}}/{{$trip->idngay}}"><i class="fa-solid fa-pen-to-square"></i></a>
+                                    </button> -->
+                                    @if(now()->format('Y-m-d') > $trip->ngaychay)
+                                    <i class="fa-solid fa-xmark"></i>
+                                    @else
                                     <button type="button" class=" btn btn-warning">
                                         <a href=" {{asset('client/ticket/findBus')}}/{{$trip->idtuyen}}/{{$trip->idgio}}/{{$trip->idngay}}"><i class="fa-solid fa-pen-to-square"></i></a>
                                     </button>
+                                    @endif
                                 </td>
                             </form>
                         </tr>

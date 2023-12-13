@@ -20,79 +20,90 @@
 
         @if(Auth::user()->idcv == '1' && auth('admin')->user()->level != 0 || Auth::user()->idcv == '4')
         <li class="nav-item">
-            <a class="nav-link" href="{{asset('admin/bus')}}">
+            <a class="nav-link {{(request()->is('admin/bus*')) ? 'active text-primary' : '' }}" href="{{asset('admin/bus')}}">
                 <span class="menu-title">Xe</span>
                 <i class="fa-solid fa-bus menu-icon"></i>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{asset('admin/route')}}">
+            <a class="nav-link {{(request()->is('admin/route*')) ? 'active text-primary' : '' }}" href="{{asset('admin/route')}}">
                 <span class="menu-title">Tuyến đường</span>
                 <i class="fa-solid fa-route menu-icon"></i>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{asset('admin/trip')}}">
+            <a class="nav-link {{(request()->is('admin/trip*')) ? 'active text-primary' : '' }}" href="{{asset('admin/trip')}}">
                 <span class="menu-title">Chuyến xe</span>
                 <i class="fa-solid fa-business-time menu-icon"></i>
             </a>
         </li>
         @elseif (Auth::user()->idcv == '2' )
-
         <li class="nav-item">
-            <a class="nav-link" href="{{asset('admin/ticket')}}">
+            <a class="nav-link {{(request()->is('admin/statistic*')) ? 'active text-primary' : '' }}" href="{{asset('admin/statistic')}}">
+                <span class="thongke menu-title">Thống kê</span>
+                <i class="fa-solid fa-filter-circle-dollar menu-icon"></i>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{(request()->is('admin/ticket*')) ? 'active text-primary' : '' }}" href="{{asset('admin/ticket/show/1')}}">
                 <span class="menu-title">Vé Xe</span>
                 <i class="fa fa-ticket menu-icon"></i>
             </a>
         </li>
         @elseif (Auth::user()->idcv == '3')
         <li class="nav-item">
-            <a class="nav-link" href="{{asset('admin/user')}}">
+            <a class="nav-link {{(request()->is('admin/user*')) ? 'active text-primary' : '' }}" href="{{asset('admin/user')}}">
                 <span class="menu-title">Nhân viên</span>
                 <i class=" fa-solid fa-user menu-icon"></i>
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link {{(request()->is('admin/customer*')) ? 'active text-primary' : '' }}" href="{{asset('admin/customer')}}">
+                <span class="menu-title">Hành Khách</span>
+                <i class="fa-solid fa-users menu-icon"></i>
+            </a>
+        </li>
         @else
         <li class="nav-item">
-            <a class="nav-link" href="{{asset('admin/statistic')}}">
+            <a class="nav-link {{(request()->is('admin/statistic*')) ? 'active text-primary' : '' }}" href="{{asset('admin/statistic')}}">
                 <span class="thongke menu-title">Thống kê</span>
                 <i class="fa-solid fa-filter-circle-dollar menu-icon"></i>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{asset('admin/user')}}">
+            <a class="nav-link {{(request()->is('admin/user*')) ? 'active text-primary' : '' }}" href="{{asset('admin/user')}}">
                 <span class=" menu-title">Nhân viên</span>
                 <i class="fa-solid fa-user menu-icon"></i>
             </a>
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="{{asset('admin/customer')}}">
+            <a class="nav-link {{(request()->is('admin/customer*')) ? 'active text-primary' : '' }}" href="{{asset('admin/customer')}}">
                 <span class="menu-title">Hành Khách</span>
                 <i class="fa-solid fa-users menu-icon"></i>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{asset('admin/bus')}}">
+            <a class="nav-link {{(request()->is('admin/bus*')) ? 'active text-primary' : '' }}" href="{{asset('admin/bus')}}">
                 <span class="menu-title">Xe</span>
                 <i class="fa-solid fa-bus menu-icon"></i>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{asset('admin/route')}}">
+            <a class="nav-link {{(request()->is('admin/route*')) ? 'active text-primary' : '' }}" href="{{asset('admin/route')}}">
                 <span class="menu-title">Tuyến đường</span>
                 <i class="fa-solid fa-route menu-icon"></i>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{asset('admin/trip')}}">
+            <a class="nav-link {{(request()->is('admin/trip*')) ? 'active text-primary' : '' }}" href="{{asset('admin/trip')}}">
                 <span class="menu-title">Chuyến xe</span>
                 <i class="fa-solid fa-business-time menu-icon"></i>
             </a>
         </li>
 
-        <li class="nav-item">
-            <a class="nav-link" href="{{asset('admin/ticket')}}">
+        <li class="nav-item ">
+            <a class="nav-link {{(request()->is('admin/ticket*')) ? 'active text-primary' : '' }}" href="{{asset('admin/ticket/show/1')}}">
                 <span class="menu-title">Vé Xe</span>
                 <i class="fa fa-ticket menu-icon"></i>
             </a>

@@ -20,7 +20,7 @@
                 <div class="row">
                     <div class="col-md-4 stretch-card ">
                         <div class="card bg-gradient-danger card-img-holder text-white shadow">
-                            <a href="{{asset('admin/ticket')}}" class="nav-link text-white">
+                            <a href="{{asset('admin/ticket/show/1')}}" class="nav-link text-white">
                                 <div class="card-body">
                                     <img src="{{asset('/images/dashboard/circle.svg')}}" class="card-img-absolute" alt="circle-image" />
                                     <h4 class="font-weight-normal mb-3">Chờ duyệt <i class="mdi mdi-chart-line mdi-24px float-right"></i>
@@ -32,7 +32,7 @@
                     </div>
                     <div class="col-md-4 stretch-card ">
                         <div class="card bg-gradient-info card-img-holder text-white  shadow">
-                            <a href="{{asset('admin/ticket')}}" class="nav-link text-white">
+                            <a href="{{asset('admin/ticket/show/2')}}" class="nav-link text-white">
                                 <div class="card-body">
                                     <img src="{{asset('/images/dashboard/circle.svg')}}" class="card-img-absolute" alt="circle-image" />
                                     <h4 class="font-weight-normal mb-3">Đã duyệt <i class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
@@ -44,7 +44,7 @@
                     </div>
                     <div class="col-md-4 stretch-card ">
                         <div class="card bg-gradient-success card-img-holder text-white shadow">
-                            <a href="{{asset('admin/ticket')}}" class="nav-link text-white">
+                            <a href="{{asset('admin/ticket/show/3')}}" class="nav-link text-white">
                                 <div class="card-body">
                                     <img src="{{asset('/images/dashboard/circle.svg')}}" class="card-img-absolute" alt="circle-image" />
                                     <h4 class="font-weight-normal mb-3">Hoàn thành <i class="mdi mdi-diamond mdi-24px float-right"></i>

@@ -54,7 +54,7 @@
                             @csrf
                             <div class="form-group">
                                 <label for="">Ngày chạy:</label>
-                                <input type="date" class="form-control dateRun" id="dateRun" name="ngaychay">
+                                <input type="date" class="form-control dateRun w-100" id="dateRun" name="ngaychay">
                                 @error('ngaychay')
                                 <span style="color: red;">{{ $message }}</span>
                                 @enderror
@@ -74,7 +74,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="idxe">Xe chạy: &nbsp;&nbsp; </label>
+                                <label for="idxe">Xe chạy:&nbsp;&nbsp; &nbsp;&nbsp; </label>
                                 <select name="idxe" id="idxe">
                                     <option value="">--- Chọn ---</option>
                                     @foreach ($buss as $bus)
@@ -92,17 +92,17 @@
                                 <span style="color: red;">{{ $message }}</span>
                                 @enderror
                             </div>
-                            
+
                             <div class="form-group">
                                 <label for="">Tài xế: &nbsp;&nbsp; </label>
                                 <select name="idadmin" id="">
                                     <option value="">--- Chọn ---</option>
                                     @foreach ($drivers as $driver)
-                                        @foreach ($users as $user)
-                                            @if ($user->idnd == $driver->idnd)
-                                            <option value="{{$driver->idadmin}}">{{$user ->tennd}}</option>
-                                            @endif
-                                        @endforeach
+                                    @foreach ($users as $user)
+                                    @if ($user->idnd == $driver->idnd)
+                                    <option value="{{$driver->idadmin}}">{{$user ->tennd}}</option>
+                                    @endif
+                                    @endforeach
                                     @endforeach
                                 </select>
                                 @error('idadmin')

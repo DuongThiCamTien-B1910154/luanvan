@@ -19419,19 +19419,19 @@ dl li {
 .sidebar .nav .nav-item .nav-link[aria-expanded="true"] .menu-arrow:before {
     content: "\f140";
 }
-.sidebar .nav .nav-item.active {
+/* .sidebar .nav .nav-item.active {
     background: #ffffff;
-}
-.sidebar .nav .nav-item.active > .nav-link .menu-title {
+} */
+/* .sidebar .nav .nav-item.active > .nav-link .menu-title {
     color: #b66dff;
     font-family: "ubuntu-medium", sans-serif;
-}
-.sidebar .nav .nav-item.active > .nav-link i {
+} */
+/* .sidebar .nav .nav-item.active > .nav-link i {
     color: #b66dff;
 }
 .sidebar .nav .nav-item:hover {
     background: #fcfcfc;
-}
+} */
 .sidebar .nav .nav-item.nav-profile .nav-link {
     height: auto;
     line-height: 1;

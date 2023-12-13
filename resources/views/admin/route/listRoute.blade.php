@@ -59,13 +59,19 @@
 
                 </div>
             </div>
-
-            @if (session('success'))
+            @if (Session::has('success'))
+            <script>
+                swal("Thành công!", "{!!session('success')!!}", "success", {
+                    button: "ok",
+                })
+            </script>
+            @endif
+            <!-- @if (session('success'))
             <div class="alert alert-success">
 
                 {{ session('success') }}
             </div>
-            @endif
+            @endif -->
             <table id="contacts" class="table bg-white table-bordered mt-2 w-100">
                 @csrf
                 <caption class="my-caption">
@@ -121,9 +127,6 @@
                     </form>
                     </tr>
                     @endforeach
-                </tbody>
-
-
                 </tbody>
             </table>
             <!-- content-wrapper ends -->

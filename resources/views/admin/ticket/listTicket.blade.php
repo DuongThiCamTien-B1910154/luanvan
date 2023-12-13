@@ -37,19 +37,33 @@
                         </div>
                     </div>
                 </form>
+                <div class="btn btn-warning " style="font-size: 15px;">
+                    <a href="{{asset('admin/ticket/show/1')}}" class="nav-link text-light ">Chờ duyệt</a>
+                </div>
+                <div class="btn btn-info " style="font-size: 15px;">
+                    <a href="{{asset('admin/ticket/show/2')}}" class="nav-link text-light "> Đã duyệt</a>    
+                </div>
+                <div class="btn btn-success " style="font-size: 15px;">
+                    <a href="{{asset('admin/ticket/show/3')}}" class="nav-link text-light "> Hoàn thành</a>
+                </div>  
                 <div class="btn btn-primary " style="font-size: 15px;">
                     <a href="{{asset('admin/ticket/addTicket')}}" class="nav-link text-light "><i class="fa-solid fa-plus"></i> Thêm vé xe</a>
-
                 </div>
             </div>
 
-
-            @if (session('success'))
+            @if (Session::has('success'))
+            <script>
+                swal("Thành công!", "{!!session('success')!!}", "success", {
+                    button: "ok",
+                })
+            </script>
+            @endif
+            <!-- @if (session('success'))
             <div class="alert alert-success">
 
                 {{ session('success') }}
             </div>
-            @endif
+            @endif -->
 
             <table id="contacts" class="table table-bordered  mt-2 w-100 bg-white">
                 @csrf
@@ -80,14 +94,9 @@
                         <td>{{$ticket->tentuyen}}</td>
                         <td>{{$ticket->ngaychay}}</td>
                         <td>{{$ticket->tg_xuatben}}</td>
-                        @if($ticket->PTTT == 0)
-                        <td>Tiền mặt</td>
-                        @else
-                        <td>Chuyển khoản</td>
-                        @endif
+                        <td>{{$ticket->tentt}}</td>
                         <td>
                             <a href="{{asset('admin/ticket/detailTicket')}}/{{$ticket->iddc}}"><b>Chi tiết</b></a>
-
                         </td>
                         <form action="" method="post">
                             @csrf

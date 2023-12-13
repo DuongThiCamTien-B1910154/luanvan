@@ -19,6 +19,7 @@ use App\Models\ticketModel;
 use App\Models\timeModel;
 use App\Models\tripDayTimeBusModel;
 use App\Models\tripModel;
+use App\Models\workModel;
 use Mail;
 // use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
@@ -66,10 +67,10 @@ class ticketClientController extends Controller
         // $user = clientModel::join('nguoidung', 'nguoidung.idnd', '=', 'khachhang.idnd')->get();
         // dd($user);
         $route = tripModel::join('tuyen', 'chuyen.idtuyen', '=', 'tuyen.idtuyen')->where('tuyen.idtuyen', $idtuyen)->distinct()->first();
-        $times = timeModel::where('idgio',$idgio)->first();
-        $days = dayModel::where('idngay',$idngay)->first();
+        $times = timeModel::where('idgio', $idgio)->first();
+        $days = dayModel::where('idngay', $idngay)->first();
         // dd($route);
-        return view('client.ticket.showBus', compact('buss', 'route', 'pttts','days','times'));
+        return view('client.ticket.showBus', compact('buss', 'route', 'pttts', 'days', 'times'));
     }
 
     public function seat(Request $request)
@@ -110,7 +111,7 @@ class ticketClientController extends Controller
                                     margin-bottom:3px;
                                     width: 35%;
                                     height: 50px;
-                                    flex: 0 0 auto;"><b style=" border-bottom: 2px solid #000; padding-bottom:3px;width: 100%">' . $bus['maghe'] . '</b></div>
+                                    flex: 0 0 auto;"><b style=" border-bottom: 2px solid #000; padding-bottom:3px;width: 100%" >' . $bus['maghe'] . '</b></div>
                                         ';
                     } else {
                         $output .= '
@@ -277,8 +278,9 @@ class ticketClientController extends Controller
                         ->exists();
 
                     if ($isExist) {
+                        // del disabled
                         $output .= '
-                            <input type="checkbox" name="idghes[]"  style="width: 15px;height: 15px;" value="' . $bus['idghe'] . '" disabled/> ' . $bus['maghe'] . '&nbsp; &nbsp;&nbsp;';
+                        <i style="width: 20px;height: 15px;" class="fa-solid fa-rectangle-xmark"></i>' . $bus['maghe'] . '&nbsp; &nbsp;';
                         if ($key + 1 < 10) {
                             $output .= '&nbsp;&nbsp;';
                         }
@@ -310,8 +312,9 @@ class ticketClientController extends Controller
                         // ->where('idttv', '!=', 4)
                         ->exists();
                     if ($isExist) {
+                        // del disabled
                         $output .= '
-                            <input type="checkbox" name="idghes[]"  style="width: 15px;height: 15px;" value="' . $bus['idghe'] . '" disabled/> ' . $bus['maghe'] . '&nbsp;&nbsp;&nbsp; ';
+                        <i style="width: 20px;height: 15px;" class="fa-solid fa-rectangle-xmark"></i>' . $bus['maghe'] . '&nbsp; &nbsp;';
                         if ($key - 10 + 1 < 10) {
                             $output .= '&nbsp;&nbsp;&nbsp;';
                         }
@@ -346,10 +349,14 @@ class ticketClientController extends Controller
                     ->exists();
 
                 if ($isExist) {
+                    // del disabled
                     $output .= '
-                        <input type="checkbox" name="idghes[]"  style="width: 15px;height: 15px;" value="' . $bus['idghe'] . '" disabled/> ' . $bus['maghe'] . '&nbsp; &nbsp;&nbsp;';
+                    <i style="width: 20px;height: 15px;" class="fa-solid fa-rectangle-xmark"></i>' . $bus['maghe'] . '&nbsp; &nbsp;
+                        ';
                     if ($key + 1 < 10) {
                         $output .= '&nbsp;&nbsp;';
+                    } else {
+                        $output .= '';
                     }
                     if (($key + 1) % 4 == 0) {
                         $output .= '</br>';
@@ -375,21 +382,112 @@ class ticketClientController extends Controller
     }
     public function booking(bookingRequest $request)
     {
-
+        $err = 0;
         $data = $request->all();
-        // dd($data);
+        if (!auth('client')->user()) {
+            $idkh = 999999999;
+        } else {
+            $idkh = auth('client')->user()->idkh;
+        }
+
+        foreach ($data['idghes'] as $checkbox) {
+            $data_w['idghe'] =  $checkbox;
+            $data_w['idkh'] = $idkh; 
+            workModel::create($data_w);
+        }
         foreach ($data['idghes'] as $checkbox) {
             $data['idghe'] = $checkbox;
+            $chair = chairModel::where('idghe', $checkbox)->first();
             $isExist = ticketModel::join('datcho', 'datcho.iddc', '=', 'chitietdatcho.iddc')
                 ->where('idghe', $checkbox)
                 ->where('id_c_ng_g_x', $data['id_c_ng_g_x'])
-                ->where('idttv', '!=', 0)
-                ->where('idttv', '!=', 3)
+                ->where('idttv', '=', 1)
+                // ->orWhere('idttv', '=', 2)
+                // ->where('idttv', '=', 3)
                 // ->where('idttv', '!=', 4)
                 ->exists();
-            if ($isExist) {
-                $error = "Vui lòng chọn mã ghế tình trạng \"trống\"!";
-                return redirect()->back()->with('error', $error);
+            // dd($isExist);
+            $countSeat =  workModel::where('idghe', $checkbox)->count();
+            if ($isExist or $countSeat > 1) {
+                $err = 1;
+                $errorChair = "Mã ghế " . $chair['maghe'] . " đã được đặt!";
+            }
+        }
+        if ($err == 1) {
+            // dd(123);
+            $error = "Vui lòng chọn mã ghế trạng thái \"trống\"!";
+            // return redirect()->back()->with('error', $error, 'errorChair' ,$errorChair);
+            workModel::where('idkh', $idkh)->delete();
+            return redirect()->back()->with(['error' => $error, 'errorChair' => $errorChair]);
+        } else {
+
+            if ($data['idtt'] == 0) {
+                if (!auth('client')->user()) {
+                    $success = "Chúng tôi sẽ gọi đến số điện thoại của quý khách để xác nhận!";
+
+                    // $data['idghe'] = $buss['idghe'];
+                    $data['idttv'] = 1;
+                    $money = 0;
+                    foreach ($data['idghes'] as $checkbox) {
+                        $money++;
+                    }
+                    $data['tongtien'] = $money * $data['giave'];
+                    $data['del'] = 0;
+                    orderModel::create($data);
+                    $iddc = orderModel::get()->last();
+                    $data['iddc'] = $iddc->iddc;
+                    // dd($data);
+                    foreach ($data['idghes'] as $checkbox) {
+                        $data['idghe'] = $checkbox;
+                        ticketModel::create($data);
+                    }
+                    workModel::where('idkh', $idkh)->delete();
+                    return redirect()->back()->with('success', $success);
+                } else {
+                    $success = "Đặt vé xe thành công.";
+                    $user = clientModel::join('nguoidung', 'nguoidung.idnd', '=', 'khachhang.idnd')
+                        ->where('idkh', auth('client')->user()->idkh)->first();
+                    $name = $user->tennd;
+                    // dd(auth('client')->user()->email);
+                    \Illuminate\Support\Facades\Mail::send('client.email.sendMail', compact('name'), function ($email) use ($name) {
+                        $email->subject('BUSLINE');
+                        $email->to(auth('client')->user()->email, $name);
+                    });
+
+                    $data['idkh'] = auth('client')->user()->idkh;
+                    $data['idttv'] = 1;
+                    $money = 0;
+                    foreach ($data['idghes'] as $checkbox) {
+                        $money++;
+                    }
+                    $data['tongtien'] = $money * $data['giave'];
+                    $data['del'] = 0;
+                    orderModel::create($data);
+                    $iddc = orderModel::get()->last();
+                    $data['iddc'] = $iddc->iddc;
+                    // dd($data);
+                    foreach ($data['idghes'] as $checkbox) {
+                        $data['idghe'] = $checkbox;
+                        ticketModel::create($data);
+                    }
+                    // dd("asd");
+                    workModel::where('idkh', $idkh)->delete();
+                    Session::flash('success', $success);
+                    return redirect('client/history/1');
+                }
+            } elseif ($data['idtt'] == 2) {
+
+                Session::put('data', $data);
+                // gia quy doi khong dung vi so nhieu lan test het tien
+                $giave = round($data['giave'] / 220000, 2);
+                // dd($giave);
+                return redirect()->route('momoPay', ['giave' => $giave]);
+            } else {
+                Session::put('data', $data);
+                // gia quy doi khong dung vi so nhieu lan test het tien
+                $giave = round($data['giave'] / 220000, 2);
+                // dd($giave);
+                return redirect()->route('processTransaction', ['giave' => $giave]);
             }
         }
         // $isExist = ticketModel::join('datcho', 'datcho.iddc', '=', 'chitietdatcho.iddc')
@@ -409,71 +507,7 @@ class ticketClientController extends Controller
         // $isExist = orderModel::where('idghe', $buss['idghe'])->where('id_c_ng_g_x', $data['id_c_ng_g_x'])->exists();
 
 
-        if ($data['idtt'] == 0) {
-            if (!auth('client')->user()) {
-                $success = "Chúng tôi sẽ gọi đến số điện thoại của quý khách để xác nhận!";
 
-                // $data['idghe'] = $buss['idghe'];
-                $data['idttv'] = 1;
-                $money = 0;
-                foreach ($data['idghes'] as $checkbox) {
-                    $money++;
-                }
-                $data['tongtien'] = $money * $data['giave'];
-                $data['del'] = 0;
-                orderModel::create($data);
-                $iddc = orderModel::get()->last();
-                $data['iddc'] = $iddc->iddc;
-                // dd($data);
-                foreach ($data['idghes'] as $checkbox) {
-                    $data['idghe'] = $checkbox;
-                    ticketModel::create($data);
-                }
-
-                return redirect()->back()->with('success', $success);
-            } else {
-                $user = clientModel::join('nguoidung', 'nguoidung.idnd', '=', 'khachhang.idnd')
-                    ->where('idkh', auth('client')->user()->idkh)->first();
-                $name = $user->tennd;
-                // dd(auth('client')->user()->email);
-                \Illuminate\Support\Facades\Mail::send('client.email.sendMail', compact('name'), function ($email) use ($name) {
-                    $email->subject('BUSLINE');
-                    $email->to(auth('client')->user()->email, $name);
-                });
-
-                $data['idkh'] = auth('client')->user()->idkh;
-                $data['idttv'] = 1;
-                $money = 0;
-                foreach ($data['idghes'] as $checkbox) {
-                    $money++;
-                }
-                $data['tongtien'] = $money * $data['giave'];
-                $data['del'] = 0;
-                orderModel::create($data);
-                $iddc = orderModel::get()->last();
-                $data['iddc'] = $iddc->iddc;
-                // dd($data);
-                foreach ($data['idghes'] as $checkbox) {
-                    $data['idghe'] = $checkbox;
-                    ticketModel::create($data);
-                }
-                // dd("asd");
-                return redirect('client/history/1');
-            }
-        } elseif ($data['idtt'] == 2) {
-
-            Session::put('data', $data);
-            // gia quy doi khong dung vi so nhieu lan test het tien
-            $giave = round($data['giave'] / 220000000, 2);
-            // dd($giave);
-            return redirect()->route('momoPay', ['giave' => $giave]);
-        } else {
-            Session::put('data', $data);
-            // gia quy doi khong dung vi so nhieu lan test het tien
-            $giave = round($data['giave'] / 220000000, 2);
-            // dd($giave);
-            return redirect()->route('processTransaction', ['giave' => $giave]);
-        }
     }
 
 
@@ -491,12 +525,18 @@ class ticketClientController extends Controller
                     $output .= '<option value ="' . $time->idgio . '">' . $time->tg_xuatben . '</option>';
                 }
             } else if ($data['action'] == "time") {
+                $today = strtotime(now()->format('Y-m-d'));
                 $days = timeModel::join('c_ng_g_x', 'gio.idgio', '=', 'c_ng_g_x.idgio')
                     ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
-                    ->where('gio.idgio', $data['ma'])->distinct('ngaychay.idngay', 'ngaychay.ngaychay')->get(['ngaychay.idngay', 'ngaychay.ngaychay']);
+                    // ->where('ngaychay.ngaychay', '=', now()->format('Y-m-d'))
+                    ->where('gio.idgio', $data['ma'])
+                    ->distinct('ngaychay.idngay', 'ngaychay.ngaychay')
+                    ->get(['ngaychay.idngay', 'ngaychay.ngaychay']);
                 $output .= '<option value ="">--- Chọn ---</option>';
                 foreach ($days as $key => $day) {
-                    $output .= '<option value ="' . $day->idngay . '">' . $day->ngaychay . '</option>';
+                    $today_get = strtotime($day->ngaychay);
+                    if ($today <= $today_get)
+                        $output .= '<option value ="' . $day->idngay . '">' . $day->ngaychay . '</option>';
                 }
             }
             echo ($output);

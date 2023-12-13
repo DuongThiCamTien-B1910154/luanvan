@@ -17,6 +17,7 @@ use App\Http\Controllers\client\scheduleController;
 use App\Http\Controllers\client\userClientController;
 use App\Http\Controllers\client\ticketClientController;
 use App\Http\Controllers\client\historyClientController;
+use App\Http\Controllers\client\homeClientController;
 use App\Http\Controllers\client\momo\momoController;
 use App\Http\Controllers\client\paypal\paypalController;
 
@@ -58,6 +59,7 @@ Route::prefix('/admin')->name('admin.')->group(function () {
         Route::get('/editUser/{id}', [userController::class, 'showFormEdit']);
         Route::post('/editUser/{id}', [userController::class, 'editUser']);
         Route::get('/deleteUser/{id}', [userController::class, 'deleteUser']);
+        Route::get('/operateUser/{id}', [userController::class, 'operateUser']);
 
         Route::post('/add', [userController::class, 'add']);
     });
@@ -89,11 +91,12 @@ Route::prefix('/admin')->name('admin.')->group(function () {
         Route::get('/editTrip/{id}', [tripController::class, 'showFormEdit']);
         Route::post('/editTrip/{id}', [tripController::class, 'editTrip']);
         Route::get('/deleteTrip/{id}', [tripController::class, 'deleteTrip']);
+        Route::get('/viewRate/{idtuyen?}/{idxe?}/{idngay?}', [tripController::class, 'viewRate']);
 
         Route::post('/countBus', [tripController::class, 'countBus']);
     });
     Route::prefix('ticket')->middleware(['auth:admin'])->group(function () {
-        Route::get('/', [ticketController::class, 'showTicket']);
+        Route::get('/show/{idttv?}', [ticketController::class, 'showTicket']);
         Route::get('/addTicket', [ticketController::class, 'addTicket']);
 
         Route::get('/detailTicket/{id}', [ticketController::class, 'detailTicket']);
@@ -118,6 +121,8 @@ Route::prefix('/admin')->name('admin.')->group(function () {
     });
     Route::prefix('customer')->middleware(['auth:admin'])->group(function () {
         Route::get('/', [customerController::class, 'showCustomer']);
+        Route::get('delete/{idkh}', [customerController::class, 'delete']);
+        Route::get('active/{idkh}', [customerController::class, 'active']);
     });
     // filter
     Route::get('filterTrip', [filterAdminController::class, 'filterTrip']);
@@ -135,14 +140,12 @@ Route::prefix('/client')->name('client.')->group(function () {
         Route::get('/login/google/redirect', [userClientController::class, 'loginGoogleRedirect']);
         Route::get('/login/google/callback', [userClientController::class, 'loginGoogleCallback'])->name('loginGoogleCallback');
     });
-    Route::get('index', function () {
+    Route::prefix('index')->group(function () {
+        Route::get('/', [homeClientController::class, 'index'])->name('index');
+    });
+    // Route::get('index', function () {
         // $diemKHs = routeModel::distinct()->get('diemKH');
-        $routes = routeModel::join('chuyen', 'chuyen.idtuyen', '=', 'tuyen.idtuyen')
-            ->join('c_ng_g_x', 'c_ng_g_x.idchuyen', '=', 'chuyen.idchuyen')
-            ->join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')->get();
-        // dd($routes);
-        return view('client.home', compact('routes'));
-    })->name('index');
+    // })->name('index');
     Route::get('introduce', function () {
         return view('client.introduce');
     });
@@ -150,6 +153,7 @@ Route::prefix('/client')->name('client.')->group(function () {
     Route::prefix('schedule')->group(function () {
         Route::get('/', [scheduleController::class, 'schedule']);
         Route::get('/timeSchedule/{id}', [scheduleController::class, 'timeSchedule']);
+        Route::post('/searchSchedule', [scheduleController::class, 'searchSchedule']);
     });
     Route::prefix('ticket')->group(function () {
         Route::get('/', [ticketClientController::class, 'showTicket']);
@@ -158,7 +162,6 @@ Route::prefix('/client')->name('client.')->group(function () {
         Route::post('/findRoute', [ticketClientController::class, 'findRoute']);
         Route::post('/seat', [ticketClientController::class, 'seat']);
         Route::post('/check_seat', [ticketClientController::class, 'check_seat']);
-       
         // Route::get('/history', [historyClientController::class, 'showHistory']);
     });
     Route::prefix('history')->group(function () {
@@ -177,6 +180,7 @@ Route::prefix('/client')->name('client.')->group(function () {
 Route::get('process-transaction', [paypalController::class, 'processTransaction'])->name('processTransaction');
 Route::get('success-transaction', [paypalController::class, 'successTransaction'])->name('successTransaction');
 Route::get('cancel-transaction', [paypalController::class, 'cancelTransaction'])->name('cancelTransaction');
+//Route::get('create-Transaction', [paypalController::class, 'createTransaction'])->name('createTransaction');
 // momo
 Route::get('momoPay', [momoController::class, 'momoPay'])->name('momoPay');
 

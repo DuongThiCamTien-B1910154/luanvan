@@ -24,12 +24,12 @@
                         <hr>
                     </div>
                     @if (session('error'))
-                    <div class="alert alert-success">
+                    <div class="alert alert-danger">
                         {{ session('error') }}
                     </div>
                     @endif
                     <div class=" card-body border ">
-                        <form action="" enctype="multipart/form-data" method="post" class="mt-4">
+                        <form action="" enctype="multipart/form-data" method="post" class="mt-2">
 
                             <div class="form-group">
                                 <label for="usernameInput" class="mb-2">
@@ -89,7 +89,7 @@
         @include('client.layout.footer')
         <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
         <script src="js/script.js"></script>
-        @include('client.layout.script')
+        <!-- @include('client.layout.script') -->
     </div>
 
 </body>

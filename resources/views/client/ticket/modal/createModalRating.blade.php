@@ -29,7 +29,7 @@
                     <textarea name="content" class="form-control content" id="content" id="" cols="30" rows="4"></textarea>
                     <div class="col-xs-12 col-sm-12 col-md-12 mt-4">
                         <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal">{{ __('Trở về') }}</button>
-                        <button type="button" class="btn btn-primary rating_bus">{{ __('Gửi đánh giá') }}</button>
+                        <button type="submit" class="btn btn-primary rating_bus">{{ __('Gửi đánh giá') }}</button>
                     </div>
                 </div>
             </div>

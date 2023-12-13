@@ -33,7 +33,7 @@
                     <!-- day la noi dung -->
 
                     <h2 class="col-12 text-uppercase  p-3 mt-2 text-black text-center" style="background-color: #48f0df; font-family: Cursive;">
-                        <a href="{{asset('admin/ticket')}}" style="float: left;"><i class="fa-solid fa-left-long text-dark"></i></a>
+                        <a href="{{asset('admin/ticket/show/1')}}" style="float: left;"><i class="fa-solid fa-left-long text-dark"></i></a>
                         <b>Đặt vé</b>
                     </h2>
                     <div class="w-100 mt-4"><u><i>Vui lòng chọn các thông tin phía dưới để tìm xe phù hợp cho chuyến đi!</i></u></div>

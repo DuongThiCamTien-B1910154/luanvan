@@ -71,6 +71,12 @@ foreach ($users as $key => $user) {
         height: 3px;
         /* padding: 3px; */
     }
+
+    input[type=checkbox][disabled]:checked {
+        outline: 2px solid green;
+        accent-color: green !important;
+        background-color: #FA9E57 !important;
+    }
 </style>
 
 
@@ -123,9 +129,11 @@ foreach ($users as $key => $user) {
                         <div class="">
                             <span class="text-uppercase font-weight-bold text-danger ml-5" style="font-size: 30px;"> Thông tin chuyến đi</span>
                         </div>
-                        @if (session('error'))
+                        @if (session('error') && session('errorChair'))
                         <div class=" alert alert-danger">
                             {{ session('error') }}
+                            <br>
+                            {{ session('errorChair') }}
                         </div>
                         @endif
 
@@ -137,7 +145,7 @@ foreach ($users as $key => $user) {
                                     <tr>
                                         <td class="pt-1"><label for="tennd2">Họ tên: </label></td>
                                         <td>
-                                            <input type="text" class=""  style="width: 300px;" oninput="Cookies.set('tennd2', this.value)" value="{{$tennd ?? $_COOKIE['tennd2']?? '' }}" id="bienso" name="tennd2" placeholder="Họ tên">
+                                            <input type="text" class="" style="width: 300px;" oninput="Cookies.set('tennd2', this.value)" value="{{$tennd ?? $_COOKIE['tennd2']?? '' }}" id="bienso" name="tennd2" placeholder="Họ tên">
                                             @error('tennd2')
                                             <div style="color: red;" class="mb-2">{{ $message }}</div>
                                             @enderror
@@ -263,7 +271,7 @@ foreach ($users as $key => $user) {
         @include('client.layout.footer')
         <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
         <!-- <script src="js/script.js"></script> -->
-        @include('client.layout.script')
+        <!-- @include('client.layout.script') -->
 
     </div>
 

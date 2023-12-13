@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
-
+use App\Models\workModel;
 use App\Models\productModel;
 use App\Models\User;
 use App\Models\orderModel;
@@ -116,7 +116,8 @@ class paypalController extends Controller
 
         if (isset($response['status']) && $response['status'] == 'COMPLETED') {
             $data = Session::get('data');
-            $buss = chairModel::join('c_ng_g_x', 'ghe.idxe', '=', 'c_ng_g_x.idxe')->where('id_c_ng_g_x', $data['id_c_ng_g_x'])->where('maghe', $data['maghe'])->first();
+            // $buss = chairModel::join('c_ng_g_x', 'ghe.idxe', '=', 'c_ng_g_x.idxe')->where('id_c_ng_g_x', $data['id_c_ng_g_x'])->where('maghe', $data['maghe'])->first();
+
             if (!auth('client')->user()) {
                 // $success = "Chúng tôi sẽ gọi đến số điện thoại của quý khách để xác nhận!";
                 // $data['idghe'] = $buss['idghe'];
@@ -152,6 +153,8 @@ class paypalController extends Controller
                     $data['idghe'] = $checkbox;
                     ticketModel::create($data);
                 }
+                workModel::where('idkh', 999999999)->delete();
+
                 return redirect('client/ticket')->with('success', $success);
             }
             // $user = clientModel::join('nguoidung', 'nguoidung.idnd', '=', 'khachhang.idnd')
@@ -189,6 +192,7 @@ class paypalController extends Controller
             //     ticketModel::create($data_ticket);
             // }
             // return redirect('client/history/0');
+            $success = "Đặt vé xe thành công.";
             $data['idkh'] = auth('client')->user()->idkh;
             $data['idttv'] = 1;
             $money = 0;
@@ -206,6 +210,9 @@ class paypalController extends Controller
                 ticketModel::create($data);
             }
             // dd("asd");
+            workModel::where('idkh', auth('client')->user()->idkh)->delete();
+
+            Session::flash('success', $success);
             return redirect('client/history/1');
         } else {
             $error = "Thanh toán qua PAYPAL thất bại!";

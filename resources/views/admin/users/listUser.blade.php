@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 @include('admin.layout.header')
@@ -11,11 +10,12 @@
         font-weight: bold;
         text-transform: uppercase;
         text-align: center;
-        
+
     }
 </style>
+
 <body>
-   
+
     <!-- partial:partials/_navbar.html -->
     @include('admin.layout.navbar')
     <!-- partial -->
@@ -43,13 +43,19 @@
 
                 </div>
             </div>
-
-            @if (session('success'))
+            @if (Session::has('success'))
+            <script>
+                swal("Thành công!", "{!!session('success')!!}", "success", {
+                    button: "ok",
+                })
+            </script>
+            @endif
+            <!-- @if (session('success'))
             <div class="alert alert-success">
 
                 {{ session('success') }}
             </div>
-            @endif
+            @endif -->
             <table id="contacts" class="table table-bordered bg-white mt-2 w-100">
                 @csrf
                 <caption class="my-caption">
@@ -67,7 +73,7 @@
                         <th>Điện thoại</th>
                         <th>Email</th>
                         <th ">Địa chỉ</th>
-                        <th style="width: 100px;">Tùy chọn</th>
+                        <th style=" width: 100px;">Tùy chọn</th>
                     </tr>
                 </thead>
                 <tbody>

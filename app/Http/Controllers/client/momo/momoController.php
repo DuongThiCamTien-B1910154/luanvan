@@ -7,16 +7,14 @@ use App\Models\chairModel;
 use App\Models\clientModel;
 use App\Models\orderModel;
 use App\Models\ticketModel;
+use App\Models\workModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 
 class momoController extends Controller
 {
-
-
-
-    public function momoPay()
+   public function momoPay()
     {
         $data_ticket = Session::get('data');
         $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
@@ -29,11 +27,11 @@ class momoController extends Controller
         $amount = $data_ticket['giave'];
         $orderId = time() . "";
         if (!auth('client')->user()) {
-            $redirectUrl = "http://127.0.0.1:8000/client/ticket";
-            $ipnUrl = "http://127.0.0.1:8000/client/ticket";
+            $redirectUrl = "http://busline.com/client/ticket";
+            $ipnUrl = "http://busline.com/client/ticket";
         } else {
-            $redirectUrl = "http://127.0.0.1:8000/client/history/0";
-            $ipnUrl = "http://127.0.0.1:8000/client/history/0";
+            $redirectUrl = "http://busline.com/client/history/0";
+            $ipnUrl = "http://busline.com/client/history/0";
         }
         $extraData = "";
 
@@ -76,7 +74,7 @@ class momoController extends Controller
         // return redirect('client/history/0');
 
 
-        $buss = chairModel::join('c_ng_g_x', 'ghe.idxe', '=', 'c_ng_g_x.idxe')->where('id_c_ng_g_x', $data_ticket['id_c_ng_g_x'])->where('maghe', $data_ticket['maghe'])->first();
+        // $buss = chairModel::join('c_ng_g_x', 'ghe.idxe', '=', 'c_ng_g_x.idxe')->where('id_c_ng_g_x', $data_ticket['id_c_ng_g_x'])->where('maghe', $data_ticket['maghe'])->first();
         if (!auth('client')->user()) {
             // $success = "Chúng tôi sẽ gọi đến số điện thoại của quý khách để xác nhận!";
             // $data_ticket['idghe'] = $buss['idghe'];
@@ -110,6 +108,7 @@ class momoController extends Controller
                 $data_ticket['idghe'] = $checkbox;
                 ticketModel::create($data_ticket);
             }
+            workModel::where('idkh', 999999999)->delete();
             // $data_ticket['idghe'] = $buss['idghe'];
             // $data_ticket['TTV'] = 0;
             // orderModel::create($data_ticket);
@@ -151,6 +150,8 @@ class momoController extends Controller
             //     $data_ticket['idghe'] = $checkbox;
             //     ticketModel::create($data_ticket);
             // }
+            $success = "Đặt vé xe thành công.";
+
             $data_ticket['idkh'] = auth('client')->user()->idkh;
             $data_ticket['idttv'] = 1;
             $money = 0;
@@ -167,8 +168,8 @@ class momoController extends Controller
                 $data_ticket['idghe'] = $checkbox;
                 ticketModel::create($data_ticket);
             }
+            workModel::where('idkh', auth('client')->user()->idkh)->delete();
         }
-
         return redirect()->to($jsonResult['payUrl']);
         //Just a example, please check more in there
 

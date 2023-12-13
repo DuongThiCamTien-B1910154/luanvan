@@ -76,45 +76,45 @@ class tripController extends Controller
     public function showBusRunAdd(Request $request)
     {
         $data = $request->all();
-        $date = dayModel::where('ngaychay',$data['dateRun'])->first();
+        $date = dayModel::where('ngaychay', $data['dateRun'])->first();
 
-        $isBusRuns = tripDayTimeBusModel::join('xe','xe.idxe','=','c_ng_g_x.idxe')
-        ->where('c_ng_g_x.idngay',$date->idngay)
-        ->distinct('xe.idxe')->get(['xe.idxe']);
+        $isBusRuns = tripDayTimeBusModel::join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')
+            ->where('c_ng_g_x.idngay', $date->idngay)
+            ->distinct('xe.idxe')->get(['xe.idxe']);
         $idxe = [];
         foreach ($isBusRuns as $isBusRun) {
             $idxe[] = $isBusRun->idxe;
         }
         $buss = busModel::join('loaixe', 'loaixe.idlx', '=', 'xe.idlx')
-        ->whereNotIn('idxe', $idxe)->get();
+            ->whereNotIn('idxe', $idxe)->get();
         $output = '';
         $output .= '<option value ="">--- Chọn ---</option>';
         foreach ($buss as $key => $bus) {
-            $output .= '<option value ="' . $bus->idxe . '">' . $bus->bienso .' - '. $bus->tenloai . '</option>';
+            $output .= '<option value ="' . $bus->idxe . '">' . $bus->bienso . ' - ' . $bus->tenloai . '</option>';
         }
         echo ($output);
     }
     public function showBusRunEdit(Request $request)
     {
         $data = $request->all();
-         // khong hien thi cac xe dang chay vao ngay dang focus
-        $date = dayModel::where('ngaychay',$data['dateRun'])->first();
-        $isBusRuns = tripDayTimeBusModel::join('xe','xe.idxe','=','c_ng_g_x.idxe')
-        ->where('c_ng_g_x.idngay',$date->idngay)
-        ->distinct('xe.idxe')->get(['xe.idxe']);
+        // khong hien thi cac xe dang chay vao ngay dang focus
+        $date = dayModel::where('ngaychay', $data['dateRun'])->first();
+        $isBusRuns = tripDayTimeBusModel::join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')
+            ->where('c_ng_g_x.idngay', $date->idngay)
+            ->distinct('xe.idxe')->get(['xe.idxe']);
         $idxe = [];
         foreach ($isBusRuns as $isBusRun) {
             $idxe[] = $isBusRun->idxe;
         }
 
-        
+
         $buss = busModel::join('loaixe', 'loaixe.idlx', '=', 'xe.idlx')
-        ->whereNotIn('idxe', $idxe)->get();
+            ->whereNotIn('idxe', $idxe)->get();
         // dd($buss);
         $output = '';
         $output .= '<option value ="">--- Chọn ---</option>';
         foreach ($buss as $key => $bus) {
-            $output .= '<option value ="' . $bus->idxe . '">' . $bus->bienso .' - '. $bus->tenloai . '</option>';
+            $output .= '<option value ="' . $bus->idxe . '">' . $bus->bienso . ' - ' . $bus->tenloai . '</option>';
         }
     }
     public function addTrip(tripRequest $request)
@@ -228,14 +228,14 @@ class tripController extends Controller
         $routes = routeModel::all();
         // $buss = busModel::all();
         $buss = busModel::join('loaixe', 'loaixe.idlx', '=', 'xe.idlx')->get();
-        $isBusRuns = tripDayTimeBusModel::join('xe','xe.idxe','=','c_ng_g_x.idxe')
-        ->distinct('xe.idxe')->get(['xe.idxe']);
+        $isBusRuns = tripDayTimeBusModel::join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')
+            ->distinct('xe.idxe')->get(['xe.idxe']);
         $idxe = [];
         foreach ($isBusRuns as $isBusRun) {
             $idxe[] = $isBusRun->idxe;
         }
         $busRunEdits = busModel::join('loaixe', 'loaixe.idlx', '=', 'xe.idlx')
-        ->whereNotIn('idxe', $idxe)->get();
+            ->whereNotIn('idxe', $idxe)->get();
         $isDrivers = tripModel::join('c_ng_g_x', 'c_ng_g_x.idchuyen', '=', 'chuyen.idchuyen')
             ->distinct('chuyen.idadmin', 'c_ng_g_x.idgio')->get(['chuyen.idadmin', 'c_ng_g_x.idgio']);
         $idadmin = [];
@@ -246,7 +246,7 @@ class tripController extends Controller
             ->whereNotIn('idadmin', $idadmin)->get();
         // $trip = tripModel::find($id);
         // dd($routes);
-        return view('admin.trip.editTrip', compact('routes', 'buss', 'data', 'drivers','busRunEdits'));
+        return view('admin.trip.editTrip', compact('routes', 'buss', 'data', 'drivers', 'busRunEdits'));
     }
 
     public function editTrip(tripRequest $request, $id)
@@ -319,5 +319,32 @@ class tripController extends Controller
         // dd(123);
         $data = tripModel::find($id)->delete();
         return redirect()->action([tripController::class, 'showTrip'])->with('success', $success);
+    }
+    public function viewRate($idchuyen = null, $idxe = null, $idngay = null)
+    {
+        $total_rating = 0;
+        $count = tripDayTimeBusModel::join('datcho', 'datcho.id_c_ng_g_x', '=', 'c_ng_g_x.id_c_ng_g_x')
+            ->join('nhanxet', 'nhanxet.iddc', '=', 'datcho.iddc')
+            ->where('c_ng_g_x.idchuyen', $idchuyen)
+            ->where('c_ng_g_x.idxe', $idxe)
+            ->where('c_ng_g_x.idngay', $idngay)
+            ->count();
+        $rating = tripDayTimeBusModel::join('datcho', 'datcho.id_c_ng_g_x', '=', 'c_ng_g_x.id_c_ng_g_x')
+            ->join('nhanxet', 'nhanxet.iddc', '=', 'datcho.iddc')
+            ->where('c_ng_g_x.idchuyen', $idchuyen)
+            ->where('c_ng_g_x.idxe', $idxe)
+            ->where('c_ng_g_x.idngay', $idngay)
+            ->sum('nhanxet.rating');
+        $datas = tripDayTimeBusModel::join('datcho', 'datcho.id_c_ng_g_x', '=', 'c_ng_g_x.id_c_ng_g_x')
+            ->join('nhanxet', 'nhanxet.iddc', '=', 'datcho.iddc')
+            ->join('ngaychay','ngaychay.idngay', '=','c_ng_g_x.idngay')
+            ->where('c_ng_g_x.idchuyen', $idchuyen)
+            ->where('c_ng_g_x.idxe', $idxe)
+            ->where('c_ng_g_x.idngay', $idngay)
+            ->get();
+        if ($count > 0) {
+            $total_rating =  round($rating / $count, 2);
+        }
+        return view('admin.trip.viewRating', compact('total_rating','datas'));
     }
 }

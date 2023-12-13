@@ -37,7 +37,7 @@ $money = 0;
                     <!-- day la noi dung -->
                     <div class="col-md-12 ">
                         <h4 class=" text-uppercase mt-3 mb-4" style="float: right;">Ngày Đặt: {{$ticket->created_at}} </h4>
-                        <h4><a href="{{asset('admin/ticket')}}" style="float: left; font-size: 30px; margin-top: 1%;"><i class="fa-solid fa-left-long text-info"></i></a></h4>
+                        <h4><a href="{{asset('admin/ticket/show/1')}}" style="float: left; font-size: 30px; margin-top: 1%;"><i class="fa-solid fa-left-long text-info"></i></a></h4>
                     </div>
                     <div class="col-1"></div>
                     <div class="col-10">

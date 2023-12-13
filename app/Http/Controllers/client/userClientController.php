@@ -8,6 +8,7 @@ use App\Models\districtModel;
 use App\Models\provinceModel;
 use App\Models\townModel;
 use App\Models\clientModel;
+use App\Models\permissionModel;
 // use Illuminate\Foundation\Auth\User;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -70,8 +71,14 @@ class userClientController extends Controller
         ]);
         $check = $request->only('email', 'password');
         if (Auth::guard('client')->attempt($check)) {
-            return redirect('client/index');
-            // dd(auth('admin')->user()->idcv);
+            $idkh = auth('client')->user()->idkh;
+            $isExists = permissionModel::where('idkh', $idkh)->exists();
+            if ($isExists) {
+                Auth::guard('client')->logout();
+                return redirect()->back()->with('error', 'Tài khoản đã bị vô hiệu hóa do hoạt đông bất thường !');
+            } else {
+                return redirect('client/index');
+            }
         } else {
             return redirect()->back()->with('error', 'Email hoặc mật khẩu chưa đúng !');
         }
@@ -102,7 +109,8 @@ class userClientController extends Controller
     // login gg
     public function loginGoogleRedirect()
     {
-        // return 456;
+        // return redirect()->back();
+
         return Socialite::driver('google')->redirect();
     }
     public function loginGoogleCallback()
@@ -115,13 +123,16 @@ class userClientController extends Controller
         ])->first();
         // dd($check);
         if ($check) {
-            // $checks = $check->only('email', 'password');
-            // dd($checks);
-            // Auth::guard('client')->attempt($checks);
             Auth::guard('client')->login($check);
-            // dd(Auth::guard('client')->login($check));
-            // dd(auth('client')->user()->idkh);
-            return redirect()->route('client.index');
+            $idkh = auth('client')->user()->idkh;
+            $isExists = permissionModel::where('idkh', $idkh)->exists();
+            if ($isExists) {
+                Auth::guard('client')->logout();
+                return redirect('client/user/login')->with('error', 'Tài khoản đã bị vô hiệu hóa do hoạt đông bất thường !');
+            } else {
+                // Auth::guard('client')->login($check);
+                return redirect()->route('client.index');
+            }
         } else {
             return redirect()->route('client.user.login')->with('error', 'Tài khoản Google không đúng!');
         }

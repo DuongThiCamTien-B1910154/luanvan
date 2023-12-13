@@ -32,6 +32,7 @@ class filterAdminController  extends Controller
             $output .= '<td>' . $data->tenloai . '</td>';
             $output .= '<td>' . $data->tg_xuatben . '</td>';
             $output .= '<td>' . $data->ngaychay . '</td>';
+            $output .= '<td><a href="' . asset('admin/trip/viewRate').'/' . $data->idchuyen .'/'. $data->idxe. '/'.$data->idngay.'" >Xem đánh giá</a></td>';
             foreach ($users as $user) {
                 if ($user->idnd == $data->idnd) {
                     $output .= '<td>' . $user->tennd . '</td>';
@@ -64,7 +65,13 @@ class filterAdminController  extends Controller
             ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
             ->join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')
             ->join('loaixe', 'loaixe.idlx', '=', 'xe.idlx')
-            ->orWhere('tennd', 'LIKE', "%$searchTrip%")
+            ->where(function ($query) use ($searchTrip) {
+                $query->where('tuyen.tentuyen', 'LIKE', "%$searchTrip%")
+                    ->orWhere('xe.bienso', 'LIKE', "%$searchTrip%")
+                    ->orWhere('loaixe.tenloai', 'LIKE', "%$searchTrip%")
+                    ->orWhere('nguoidung.tennd', 'LIKE', "%$searchTrip%");
+            })
+            // ->orWhere('tennd', 'LIKE', "%$searchTrip%")
             ->orderBy('tuyen.idtuyen')->orderBy('ngaychay.ngaychay')->get();
         $users = User::all();
         $output = '';
@@ -76,6 +83,8 @@ class filterAdminController  extends Controller
             $output .= '<td>' . $data->tenloai . '</td>';
             $output .= '<td>' . $data->tg_xuatben . '</td>';
             $output .= '<td>' . $data->ngaychay . '</td>';
+            $output .= '<td><a href="' . asset('admin/trip/viewRate').'/' . $data->idchuyen .'/'. $data->idxe. '/'.$data->idngay.'" >Xem đánh giá</a></td>';
+
             foreach ($users as $user) {
                 if ($user->idnd == $data->idnd) {
                     $output .= '<td>' . $user->tennd . '</td>';

@@ -85,7 +85,7 @@
             <!-- content-wrapper -->
 
 
-            <div class="container-fluid row mt-2 " >
+            <div class="container-fluid row mt-2 ">
                 <div class="row bg-white">
                     <!-- day la noi dung -->
 
@@ -164,7 +164,7 @@
                                         <tr>
                                             <td><label for="giave">Giá vé:</label></td>
                                             <td>
-                                                <input type="text" id="giave"class="w-100"  name="giave" readonly value="{{$route->giave}}">
+                                                <input type="text" id="giave" class="w-100" name="giave" readonly value="{{$route->giave}}">
                                             </td>
                                         </tr>
                                         <tr>
@@ -187,10 +187,10 @@
                                         </tr>
                                         <tr>
                                             <td><label for="id_c_ng_g_x">Xe:</label></td>
-                                            <td><select name="id_c_ng_g_x" id="bus" class="bus w-100" >
+                                            <td><select name="id_c_ng_g_x" id="bus" class="bus w-100">
                                                     <option value="">--- Chọn ---</option>
                                                     @foreach ($buss as $bus)
-                                                    <option value="{{$bus->id_c_ng_g_x}}" >{{$bus->bienso}} - {{$bus->tenloai}}</option>
+                                                    <option value="{{$bus->id_c_ng_g_x}}">{{$bus->bienso}} - {{$bus->tenloai}}</option>
                                                     @endforeach
                                                 </select>
                                                 @error('id_c_ng_g_x')
@@ -204,10 +204,10 @@
                                             <td>
                                                 <div class="check_seat">
 
-                                                    <input type="checkbox" name="idghes[]" id="checkbox-2" value="" disabled style="width: 15px;height: 15px;" /><span>A1 &nbsp;&nbsp;&nbsp;</span>
+                                                    <!-- <input type="checkbox" name="idghes[]" id="checkbox-2" value="" disabled style="width: 15px;height: 15px;" /><span>A1 &nbsp;&nbsp;&nbsp;</span>
                                                     <input type="checkbox" name="idghes[]" id="checkbox-3" value="" style="width: 15px;height: 15px;" /> <span>A2 &nbsp;&nbsp;&nbsp;</span>
                                                     <input type="checkbox" name="idghes[]" id="checkbox-2" value="" style="width: 15px;height: 15px;" /> <span>A3 &nbsp;&nbsp;&nbsp;</span>
-                                                    <input type="checkbox" name="idghes[]" id="checkbox-3" value="" style="width: 15px;height: 15px;" /> <span>A4</span>
+                                                    <input type="checkbox" name="idghes[]" id="checkbox-3" value="" style="width: 15px;height: 15px;" /> <span>A4</span> -->
                                                 </div>
 
                                                 <!-- <input type="text" class="w-100" oninput="Cookies.set('maghe', this.value)" value="{{$_COOKIE['maghe'] ?? ''}}" id="maghe" name="maghe" placeholder="Ví dụ: A1"> -->

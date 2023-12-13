@@ -2,6 +2,7 @@
 $stt = 1;
 $maghes = "";
 $money = 0;
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -49,7 +50,7 @@ $money = 0;
                     <div class=" card-body border mb-3 ">
                         <form action="{{asset('client/ticket/booking')}}" enctype="multipart/form-data" method="POST" id="form-id" class="">
                             @csrf
-                            <table >
+                            <table>
                                 <tr>
                                     <td><label for="tennd">Họ tên: </label></td>
                                     <td>
@@ -63,7 +64,7 @@ $money = 0;
                                 <tr>
                                     <td><label for="sdt2">SĐT:</label></td>
                                     <td>
-                                        <input type="text" id="sdt2" name="sdt2" class="w-100"readonly value="{{$seat->sdt2}}">
+                                        <input type="text" id="sdt2" name="sdt2" class="w-100" readonly value="{{$seat->sdt2}}">
                                     </td>
                                 </tr>
                                 <tr>
@@ -81,7 +82,7 @@ $money = 0;
                                 <tr>
                                     <td><label for="sdt2">Giờ chạy:</label></td>
                                     <td>
-                                        <input type="text" id="sdt2" name="sdt2"class="w-100" readonly value="{{$seat->tg_xuatben}}">
+                                        <input type="text" id="sdt2" name="sdt2" class="w-100" readonly value="{{$seat->tg_xuatben}}">
                                     </td>
                                 </tr>
                                 <tr>
@@ -112,25 +113,25 @@ $money = 0;
                                     <td>
                                         @foreach ($chairs as $chair)
                                         @if($chair->iddc == $seat->iddc)
-                                        
-                                        <?php 
-                                        $money ++;
-                                        $maghes .= $chair->maghe ."  "?>
+
+                                        <?php
+                                        $money++;
+                                        $maghes .= $chair->maghe . "  " ?>
                                         @endif
                                         @endforeach
-                                        <input type="text" id="maghe" class="w-100"name="maghe" readonly value="{{$maghes}}">
+                                        <input type="text" id="maghe" class="w-100" name="maghe" readonly value="{{$maghes}}">
                                     </td>
                                 </tr>
                                 <tr>
                                     <td><label for="note">Tổng tiền: </label></td>
                                     <td>
-                                        <input id="note" name="" class="w-100" readonly value="{{$seat->giave * $money}} vnd"> 
+                                        <input id="note" name="" class="w-100" readonly value="{{$seat->giave * $money}} vnd">
                                     </td>
                                 </tr>
                                 <tr>
                                     <td><label for="note">Ghi chú: </label></td>
                                     <td>
-                                        <textarea id="note" name="note" class="w-100" style="height: 30px;"  readonly value="">{{$seat->note}}</textarea>
+                                        <textarea id="note" name="note" class="w-100" style="height: 30px;" readonly value="">{{$seat->note}}</textarea>
                                     </td>
                                 </tr>
                             </table>
@@ -147,20 +148,20 @@ $money = 0;
                                     Xóa
                                 </a>
                                 @if ($rates->isEmpty())
-                                <div data-toggle="modal" data-target="#ModalCreateRating" class="btn btn-primary id_rating 1 " id="{{$seat->iddc}}">
-                                    Đánh giá
-                                </div>
+                                    <div data-toggle="modal" data-target="#ModalCreateRating" class="btn btn-primary id_rating 1 " id="{{$seat->iddc}}">
+                                        Đánh giá
+                                    </div>
                                 @else
-                                @foreach ($rates as $rate)
-                                    @if ($rate->iddc == $seat->iddc && $temp==0)
-                                        <div data-toggle="modal" data-target="#ModalReviewRating" class="btn btn-primary id_rating_view 2" id="{{$seat->iddc}}">
-                                            Xem đánh giá
-                                        </div>
-                                        <input type="hidden" value="{{$rate->rating}}" class="rating_number">
-                                        <input type="hidden" value="{{$rate->noidungbl}}" class="rating_content">
-                                        <?php $temp++ ?>
-                                    @endif
-                                @endforeach
+                                    @foreach ($rates as $rate)
+                                        @if ($rate->iddc == $seat->iddc && $temp==0)
+                                            <div data-toggle="modal" data-target="#ModalReviewRating" class="btn btn-primary id_rating_view 2" id="{{$seat->iddc}}">
+                                                Xem đánh giá
+                                            </div>
+                                            <input type="hidden" value="{{$rate->rating}}" class="rating_number">
+                                            <input type="hidden" value="{{$rate->noidungbl}}" class="rating_content">
+                                            <?php $temp++ ?>
+                                        @endif
+                                    @endforeach
                                 @if($temp == 0)
                                 <div data-toggle="modal" data-target="#ModalCreateRating" class="btn btn-primary id_rating 3 " id="{{$seat->iddc}}">
                                     Đánh giá
@@ -197,11 +198,24 @@ $money = 0;
                 @endforeach
 
                 <div class="col-2"></div>
+                @if (Session::has('success'))
+                    <script>
+                        swal("Thành công!", "{!!session('success')!!}", "success", {
+                            button: "ok",
+                        })
+                    </script>
+                @endif
                 <!-- het noi dung -->
             </div>
             <div class="col-3"></div>
+            <div class="col-4"></div>
+            <div class="col-4">
 
-            <div style="margin-left: 45%;" class="mt-3">{{$seats->onEachSide(1)->links()}}</div>
+                <div style="position: relative; text-align: justify;" class="mt-3">{{$seats->onEachSide(1)->links()}}</div>
+            </div>
+            <div class="col-4"></div>
+            
+
 
 
         </div>
@@ -211,7 +225,7 @@ $money = 0;
         <!-- noi dung -->
         @include('client.layout.footer')
         <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-        @include('client.layout.script')
+        <!-- @include('client.layout.script') -->
     </div>
 
 </body>

@@ -36,11 +36,11 @@
                         </div>
                     </div>
                 </span>
-                <div class="btn btn-primary " style="font-size: 15px; ">
+                <!-- <div class="btn btn-primary " style="font-size: 15px; ">
                     <a href="{{asset('admin/trip/addTripAuto')}}" class="nav-link text-light " onclick="return confirm('Toàn bộ chuyễn đã đăng ký trước đó sẽ được thêm cho 1 tuần tới.')"><i class="fa-solid fa-plus"></i> Thêm chuyến tự động</a>
-                </div>
+                </div> -->
                 <div class="btn btn-primary " style="font-size: 15px; ">
-                    <a href="{{asset('admin/trip/addTrip')}}" class="nav-link text-light "><i class="fa-solid fa-plus"></i> Thêm 1 chuyến </a>
+                    <a href="{{asset('admin/trip/addTrip')}}" class="nav-link text-light "><i class="fa-solid fa-plus"></i> Thêm chuyến </a>
                 </div>
             </div>
             <div class="m-3">
@@ -66,13 +66,19 @@
 
                 </form>
             </div>
-
-            @if (session('success'))
+            @if (Session::has('success'))
+            <script>
+                swal("Thành công!", "{!!session('success')!!}", "success", {
+                    button: "ok",
+                })
+            </script>
+            @endif
+            <!-- @if (session('success'))
             <div class="alert alert-success">
 
                 {{ session('success') }}
             </div>
-            @endif
+            @endif -->
             <table id="contacts" class="bg-white table table-bordered  w-100">
                 @csrf
                 <caption class="my-caption">
@@ -87,6 +93,8 @@
                         <th>Giờ xuất bến</th>
 
                         <th>Ngày chạy</th>
+                        <th>Đánh giá</th>
+
                         <th>Tài xế</th>
                         <th style="width: 100px;">Tùy chọn</th>
                     </tr>

@@ -8,7 +8,7 @@ use App\Models\statisticModel;
 use App\Models\ticketModel;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
 use function PHPUnit\Framework\isNull;
 
 class statisticController extends Controller
@@ -91,7 +91,7 @@ class statisticController extends Controller
             }
             echo $data = json_encode($chart);
         } else {
-            echo("");
+            echo ("");
         }
 
         // echo $data;
@@ -108,20 +108,81 @@ class statisticController extends Controller
             ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
             ->where('idttv', '=', 3)
             ->whereBetween('ngaychay.ngaychay', [$start_day, $end_day])
+            ->groupBy('bienso')
             ->get(['tongtien', 'bienso'])
             ->max();
-        $profitBusMin = orderModel::join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'datcho.id_c_ng_g_x')
+        // $profitBusMin = orderModel::join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'datcho.id_c_ng_g_x')
+        //     ->join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')
+        //     ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
+        //     ->where('idttv', '=', 3)
+        //     ->whereBetween('ngaychay.ngaychay', [$start_day, $end_day])
+        //     ->groupBy('bienso')
+        //     ->get(['tongtien', 'bienso'])
+        //     ->min();
+
+        $profitBus1 = orderModel::join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'datcho.id_c_ng_g_x')
             ->join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')
             ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
             ->where('idttv', '=', 3)
             ->whereBetween('ngaychay.ngaychay', [$start_day, $end_day])
-            ->get(['tongtien', 'bienso'])
-            ->min();
-        // echo ($profitBusMin['tongtien']);
+            ->groupBy('bienso')
+            ->get('bienso');
+
+
+        $profitBus2 = orderModel::join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'datcho.id_c_ng_g_x')
+            ->join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')
+            ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
+            ->where('idttv', '=', 3)
+            ->whereBetween('ngaychay.ngaychay', [$start_day, $end_day])
+            ->groupBy('xe.idxe')
+            ->get('tongtien')
+            ->sum('tongtien');
+
+        $profitBus = DB::table('datcho')
+            ->join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'datcho.id_c_ng_g_x')
+            ->join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')
+            ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
+            ->where('idttv', '=', 3)
+            ->whereBetween('ngaychay.ngaychay', [$start_day, $end_day])
+            ->groupBy('xe.idxe')
+            ->select('bienso', DB::raw('SUM(tongtien) as tongtien'))
+            ->get();
+        $maxTongtien = $profitBus->max('tongtien');
+        $minTongtien = $profitBus->min('tongtien');
+
+        // $profitBus2 =  DB::table('datcho')
+        //     ->join('c_ng_g_x', 'c_ng_g_x.id_c_ng_g_x', '=', 'datcho.id_c_ng_g_x')
+        //     ->join('xe', 'xe.idxe', '=', 'c_ng_g_x.idxe')
+        //     ->join('ngaychay', 'ngaychay.idngay', '=', 'c_ng_g_x.idngay')
+        //     ->where('idttv', '=', 3)
+        //     ->whereBetween('ngaychay.ngaychay', [$start_day, $end_day])
+        //     ->where('tongtien', '=', $maxTongtien)
+        //     ->groupBy('xe.idxe')
+        //     // ->select('bienso')
+        //     ->get('bienso');
+        $profitMax = $profitBus->where('tongtien', '=', $maxTongtien);
+        $profitMin = $profitBus->where('tongtien', '=', $minTongtien);
+        // ->max();
+        // $profit = $profitBus->addSelect('xe.idlx')->get();
+        //     ->sum(['tongtien']); 
+
+        // $max = $profitBus->select(['bienso'])->where();
+        // $maxBienso = $profitBus->get('bienso')->sum('tongtien');
+        // echo ($abc);
 
         $output = '';
-        $output .= ' <div>Doanh thu xe cao nhất: ' . $profitBusMax['bienso'] . ' - ' . $profitBusMax['tongtien'] . ' vnđ </div>';
-        $output .= ' <div>Doanh thu xe thấp nhất: ' . $profitBusMin['bienso'] . ' - ' . $profitBusMin['tongtien'] . ' vnđ </div>';
+        foreach ($profitMax as $value) {
+            $output .= ' <div>Doanh thu xe cao nhất: ' . $value->bienso . ' - ' . $value->tongtien . ' vnđ </div>';
+            // $output .= $value->bienso . '-' . $value->tongtien .'<br>';
+        }
+        foreach ($profitMin as $value) {
+            $output .= ' <div>Doanh thu xe thấp nhất: ' . $value->bienso . ' - ' . $value->tongtien . ' vnđ </div>';
+            // $output .= $value->bienso . '-' . $value->tongtien .'<br>';
+        }
         echo ($output);
+        // $output = '';
+        // $output .= ' <div>Doanh thu xe cao nhất: ' . $profitBusMax['bienso'] . ' - ' . $profitBusMax['tongtien'] . ' vnđ </div>';
+        // $output .= ' <div>Doanh thu xe thấp nhất: ' . $profitBusMin['bienso'] . ' - ' . $profitBusMin['tongtien'] . ' vnđ </div>';
+        // echo ($output);
     }
 }

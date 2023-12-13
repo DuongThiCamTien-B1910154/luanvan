@@ -124,7 +124,7 @@
         @include('client.layout.footer')
         <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
         <script src="js/script.js"></script>
-        @include('client.layout.script')
+        <!-- @include('client.layout.script') -->
     </div>
 
 </body>
